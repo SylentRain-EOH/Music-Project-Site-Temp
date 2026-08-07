@@ -29,11 +29,17 @@ class TrackListItem(BaseModel):
     id: int
     album_id: int
     album_title: str
+    album_slug: str
+    cover_url: str | None
     title: str
     track_number: int
     duration_seconds: int | None
     audio_url: str
     credits: list[CreditOut] = []
+
+
+class TrackDetail(TrackListItem):
+    lyrics: str | None = None
 
 
 class AlbumDetail(AlbumListItem):

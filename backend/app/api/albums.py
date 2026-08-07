@@ -10,6 +10,10 @@ from app.schemas import AlbumDetail, AlbumListItem, ArtistOut, CreditOut, TrackL
 router = APIRouter(prefix="/albums", tags=["albums"])
 
 
+def _cover_url(album: Album) -> str | None:
+    return f"/media/{album.cover_path}" if album.cover_path else None
+
+
 def _credit_out(credit: Credit) -> CreditOut:
     return CreditOut(role=credit.role, artist=ArtistOut.model_validate(credit.artist))
 
@@ -19,7 +23,7 @@ def _album_list_item(album: Album) -> AlbumListItem:
         id=album.id,
         slug=album.slug,
         title=album.title,
-        cover_url=f"/media/{album.cover_path}" if album.cover_path else None,
+        cover_url=_cover_url(album),
         release_date=album.release_date,
     )
 
@@ -34,6 +38,8 @@ def _album_detail(album: Album) -> AlbumDetail:
                 id=track.id,
                 album_id=album.id,
                 album_title=album.title,
+                album_slug=album.slug,
+                cover_url=_cover_url(album),
                 title=track.title,
                 track_number=track.track_number,
                 duration_seconds=track.duration_seconds,

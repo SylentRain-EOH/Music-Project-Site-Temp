@@ -72,6 +72,7 @@ async def seed_demo() -> None:
             track_number=1,
             duration_seconds=2,
             audio_path="audio/demo-01.wav",
+            lyrics="天光从云层边缘醒来\n我在寂静里听见心跳\n第一束光照进房间\nnew day, new way",
         )
         second_track = Track(
             album_id=album.id,
@@ -79,6 +80,7 @@ async def seed_demo() -> None:
             track_number=2,
             duration_seconds=2,
             audio_path="audio/demo-02.wav",
+            lyrics="余晖落在远山背后\n风把一天轻轻合上\n等夜色覆盖所有路\ntomorrow keeps its promise",
         )
         session.add_all([first_track, second_track])
         await session.flush()

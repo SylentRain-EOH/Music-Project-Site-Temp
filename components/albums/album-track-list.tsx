@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { usePlayer } from "@/components/player/player-provider";
 import type { Track } from "@/lib/music";
 
@@ -12,6 +14,7 @@ function formatDuration(seconds: number | null): string {
 
 export default function AlbumTrackList({ tracks }: { tracks: Track[] }) {
   const { currentTrack, isPlaying, playTrack, togglePlay } = usePlayer();
+  const router = useRouter();
 
   return (
     <ol className="divide-y divide-zinc-800 border-y border-zinc-800">
@@ -24,9 +27,13 @@ export default function AlbumTrackList({ tracks }: { tracks: Track[] }) {
               onClick={() => {
                 if (isCurrent) {
                   togglePlay();
+                  return;
                 } else {
                   playTrack(track, tracks);
                 }
+                router.push(`/tracks/${track.id}`, {
+                  transitionTypes: ["nav-forward"],
+                });
               }}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xs transition-colors hover:border-zinc-400"
               aria-label={

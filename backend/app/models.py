@@ -62,6 +62,7 @@ class Track(Base):
     track_number: Mapped[int] = mapped_column(Integer)
     duration_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     audio_path: Mapped[str] = mapped_column(String(500))
+    lyrics: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
