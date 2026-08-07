@@ -1,27 +1,34 @@
 export type Artist = {
-  id: string;
+  id: number;
   name: string;
-  role?: string;
+};
+
+export type Credit = {
+  role: string;
+  artist: Artist;
+};
+
+export type AlbumSummary = {
+  id: number;
+  slug: string;
+  title: string;
+  cover_url: string | null;
+  release_date: string | null;
 };
 
 export type Track = {
-  id: string;
-  albumId: string;
-  albumTitle: string;
+  id: number;
+  album_id: number;
+  album_title: string;
   title: string;
-  trackNumber: number;
-  duration?: number;
-  audioUrl: string;
-  artists?: Artist[];
+  track_number: number;
+  duration_seconds: number | null;
+  audio_url: string;
+  credits: Credit[];
 };
 
-export type Album = {
-  id: string;
-  slug: string;
-  title: string;
-  coverUrl?: string;
-  releaseDate?: string;
-  description?: string;
-  artists?: Artist[];
-  tracks?: Track[];
+export type AlbumDetail = AlbumSummary & {
+  description: string | null;
+  credits: Credit[];
+  tracks: Track[];
 };

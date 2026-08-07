@@ -27,6 +27,8 @@ class AlbumListItem(BaseModel):
 
 class TrackListItem(BaseModel):
     id: int
+    album_id: int
+    album_title: str
     title: str
     track_number: int
     duration_seconds: int | None

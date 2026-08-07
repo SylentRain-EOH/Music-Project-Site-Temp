@@ -74,7 +74,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       {children}
       <audio
         ref={audioRef}
-        src={currentTrack?.audioUrl}
+        src={currentTrack?.audio_url}
         autoPlay={currentTrack !== null}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}

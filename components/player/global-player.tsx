@@ -16,7 +16,7 @@ export default function GlobalPlayer() {
                 {currentTrack.title}
               </p>
               <p className="truncate text-xs text-zinc-400">
-                {currentTrack.albumTitle}
+                {currentTrack.album_title}
               </p>
             </div>
             <button

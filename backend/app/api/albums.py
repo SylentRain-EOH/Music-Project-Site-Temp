@@ -32,6 +32,8 @@ def _album_detail(album: Album) -> AlbumDetail:
         tracks=[
             TrackListItem(
                 id=track.id,
+                album_id=album.id,
+                album_title=album.title,
                 title=track.title,
                 track_number=track.track_number,
                 duration_seconds=track.duration_seconds,
