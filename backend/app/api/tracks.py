@@ -10,6 +10,14 @@ from app.models import Track
 
 router = APIRouter(prefix="/tracks", tags=["tracks"])
 
+MEDIA_TYPES = {
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/wav",
+    ".flac": "audio/flac",
+    ".m4a": "audio/mp4",
+    ".ogg": "audio/ogg",
+}
+
 
 @router.get("/{track_id}/stream")
 async def stream_track(
@@ -26,6 +34,8 @@ async def stream_track(
 
     return FileResponse(
         media_path,
-        media_type="audio/mpeg",
+        media_type=MEDIA_TYPES.get(
+            Path(track.audio_path).suffix.lower(), "application/octet-stream"
+        ),
         filename=Path(track.audio_path).name,
     )
