@@ -9,6 +9,7 @@ export default function AlbumCard({ album }: { album: AlbumSummary }) {
     <Link
       href={`/albums/${album.slug}`}
       transitionTypes={["nav-forward"]}
+      title={album.title}
       className="group block rounded-lg ring-1 ring-transparent transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700"
     >
       <ViewTransition
@@ -32,10 +33,6 @@ export default function AlbumCard({ album }: { album: AlbumSummary }) {
           )}
         </div>
       </ViewTransition>
-      <h2 className="mt-3 truncate font-medium">{album.title}</h2>
-      {album.release_date ? (
-        <p className="mt-1 text-xs text-zinc-400">{album.release_date}</p>
-      ) : null}
     </Link>
   );
 }

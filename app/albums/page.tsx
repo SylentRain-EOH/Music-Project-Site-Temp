@@ -4,8 +4,6 @@ import AlbumCard from "@/components/albums/album-card";
 import PageTransition from "@/components/page-transition";
 import { getAlbums } from "@/lib/api";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "专辑",
   description: "浏览 Soul Searching 企划下已发布的所有专辑。",

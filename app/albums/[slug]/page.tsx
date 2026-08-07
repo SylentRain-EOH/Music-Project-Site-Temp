@@ -6,9 +6,14 @@ import { ViewTransition } from "react";
 
 import AlbumTrackList from "@/components/albums/album-track-list";
 import PageTransition from "@/components/page-transition";
-import { getAlbum } from "@/lib/api";
+import { getAlbum, getAlbums } from "@/lib/api";
 
-export const dynamic = "force-dynamic";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const albums = await getAlbums();
+  return albums.map((album) => ({ slug: album.slug }));
+}
 
 type AlbumDetailPageProps = {
   params: Promise<{ slug: string }>;

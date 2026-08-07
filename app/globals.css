@@ -109,11 +109,32 @@ body {
   }
 }
 
+/* 底部播放器频谱 */
+@keyframes spectrum-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.spectrum-bar {
+  height: 100%;
+  transform-origin: bottom;
+  animation: spectrum-bounce 0.9s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
   ::view-transition-new(*),
   ::view-transition-group(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
+  }
+
+  .spectrum-bar {
+    animation-duration: 0s !important;
   }
 }
