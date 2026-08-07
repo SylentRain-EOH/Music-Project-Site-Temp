@@ -3,6 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  NextIcon,
+  PauseIcon,
+  PlayIcon,
+  PrevIcon,
+} from "@/components/player/icons";
 import { usePlayer } from "./player-provider";
 import Spectrum from "./spectrum";
 
@@ -46,7 +52,7 @@ export default function GlobalPlayer() {
                 className="rounded-md px-2 py-2 text-sm text-zinc-300 transition-colors hover:text-foreground"
                 aria-label="上一首"
               >
-                ⏮
+                <PrevIcon className="h-4 w-4" />
               </button>
               <button
                 type="button"
@@ -54,7 +60,11 @@ export default function GlobalPlayer() {
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-700 text-sm transition-colors hover:border-zinc-500"
                 aria-label={isPlaying ? "暂停" : "播放"}
               >
-                {isPlaying ? "⏸" : "▶"}
+                {isPlaying ? (
+                  <PauseIcon className="h-4 w-4" />
+                ) : (
+                  <PlayIcon className="h-4 w-4" />
+                )}
               </button>
               <button
                 type="button"
@@ -62,7 +72,7 @@ export default function GlobalPlayer() {
                 className="rounded-md px-2 py-2 text-sm text-zinc-300 transition-colors hover:text-foreground"
                 aria-label="下一首"
               >
-                ⏭
+                <NextIcon className="h-4 w-4" />
               </button>
             </div>
           </>

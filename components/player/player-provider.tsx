@@ -16,11 +16,13 @@ type PlayerContextValue = {
   isPlaying: boolean;
   currentTime: number;
   duration: number;
+  playMode: "sequence" | "single" | "shuffle";
   playTrack: (track: Track, queue?: Track[]) => void;
   togglePlay: () => void;
   playNext: () => void;
   playPrevious: () => void;
   seekTo: (time: number) => void;
+  cyclePlayMode: () => void;
 };
 
 const PlayerContext = createContext<PlayerContextValue | null>(null);
@@ -31,6 +33,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [playMode, setPlayMode] = useState<"sequence" | "single" | "shuffle">(
+    "sequence"
+  );
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   function playTrack(track: Track, nextQueue: Track[] = []) {
@@ -54,7 +59,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   function playNext() {
     if (!currentTrack || queue.length === 0) return;
     const index = queue.findIndex((track) => track.id === currentTrack.id);
-    const nextTrack = queue[(index + 1) % queue.length] ?? queue[0];
+    let nextIndex = (index + 1) % queue.length;
+    if (playMode === "shuffle" && queue.length > 1) {
+      do {
+        nextIndex = Math.floor(Math.random() * queue.length);
+      } while (nextIndex === index);
+    }
+    const nextTrack = queue[nextIndex] ?? queue[0];
     setCurrentTime(0);
     setDuration(0);
     setCurrentTrack(nextTrack);
@@ -68,6 +79,26 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     setCurrentTime(0);
     setDuration(0);
     setCurrentTrack(previousTrack);
+  }
+
+  function handleEnded() {
+    if (playMode === "single") {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.currentTime = 0;
+        void audio.play();
+      }
+      return;
+    }
+    playNext();
+  }
+
+  function cyclePlayMode() {
+    setPlayMode((mode) => {
+      if (mode === "sequence") return "single";
+      if (mode === "single") return "shuffle";
+      return "sequence";
+    });
   }
 
   function seekTo(time: number) {
@@ -85,11 +116,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         isPlaying,
         currentTime,
         duration,
+        playMode,
         playTrack,
         togglePlay,
         playNext,
         playPrevious,
         seekTo,
+        cyclePlayMode,
       }}
     >
       {children}
@@ -108,7 +141,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
           if (Number.isFinite(value)) setDuration(value);
         }}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-        onEnded={playNext}
+        onEnded={handleEnded}
       />
     </PlayerContext.Provider>
   );

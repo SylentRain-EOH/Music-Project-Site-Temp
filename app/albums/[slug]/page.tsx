@@ -4,8 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
 
-import AlbumTrackList from "@/components/albums/album-track-list";
+import AlbumPlayButton from "@/components/albums/album-play-button";
 import PageTransition from "@/components/page-transition";
+import { BackIcon } from "@/components/player/icons";
 import { getAlbum, getAlbums } from "@/lib/api";
 
 export const dynamicParams = false;
@@ -47,15 +48,18 @@ export default async function AlbumDetailPage({
 
   return (
     <PageTransition>
-      <div className="mx-auto max-w-5xl px-4 py-12">
-        <Link
-          href="/albums"
-          transitionTypes={["nav-back"]}
-          className="inline-flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-foreground"
-        >
-          ← 返回专辑列表
-        </Link>
-        <div className="mt-8 grid gap-10 md:grid-cols-[minmax(0,320px)_1fr]">
+      <div className="mx-auto flex h-[calc(100vh-7.5rem)] max-w-5xl flex-col px-4 py-4">
+        <div className="shrink-0">
+          <Link
+            href="/albums"
+            transitionTypes={["nav-back"]}
+            aria-label="返回专辑列表"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-foreground"
+          >
+            <BackIcon className="h-5 w-5" />
+          </Link>
+        </div>
+        <div className="grid min-h-0 flex-1 items-center gap-10 md:grid-cols-[minmax(0,320px)_1fr]">
           <ViewTransition
             name={`album-cover-${album.slug}`}
             share="morph"
@@ -78,7 +82,7 @@ export default async function AlbumDetailPage({
               )}
             </div>
           </ViewTransition>
-          <div>
+          <div className="min-h-0 overflow-hidden">
             <h1 className="text-3xl font-bold tracking-tight">{album.title}</h1>
             {album.release_date ? (
               <p className="mt-2 text-sm text-zinc-400">
@@ -86,12 +90,12 @@ export default async function AlbumDetailPage({
               </p>
             ) : null}
             {album.description ? (
-              <p className="mt-4 text-sm leading-7 text-zinc-300">
+              <p className="mt-4 line-clamp-3 text-sm leading-7 text-zinc-300">
                 {album.description}
               </p>
             ) : null}
             {album.credits.length > 0 ? (
-              <div className="mt-6">
+              <div className="mt-5">
                 <h2 className="text-sm font-medium text-zinc-400">制作人员</h2>
                 <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm">
                   {album.credits.map((credit, index) => (
@@ -102,14 +106,11 @@ export default async function AlbumDetailPage({
                 </ul>
               </div>
             ) : null}
+            <div className="mt-8">
+              <AlbumPlayButton tracks={album.tracks} />
+            </div>
           </div>
         </div>
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold">曲目</h2>
-          <div className="mt-4">
-            <AlbumTrackList tracks={album.tracks} />
-          </div>
-        </section>
       </div>
     </PageTransition>
   );
