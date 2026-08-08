@@ -92,13 +92,16 @@ class TrackAdmin(ModelView, model=Track):
         Track.lyrics: "歌词",
     }
     form_columns = [
-        Track.album_id,
+        Track.album,
         Track.title,
         Track.track_number,
         Track.duration_seconds,
         Track.audio_path,
         Track.lyrics,
     ]
+    form_ajax_refs = {
+        "album": {"fields": ["title"], "order_by": "title"},
+    }
 
 
 class ArtistAdmin(ModelView, model=Artist):
@@ -134,11 +137,16 @@ class CreditAdmin(ModelView, model=Credit):
         Credit.role: "角色",
     }
     form_columns = [
-        Credit.album_id,
-        Credit.track_id,
-        Credit.artist_id,
+        Credit.album,
+        Credit.track,
+        Credit.artist,
         Credit.role,
     ]
+    form_ajax_refs = {
+        "album": {"fields": ["title"], "order_by": "title"},
+        "track": {"fields": ["title"], "order_by": "track_number"},
+        "artist": {"fields": ["name"], "order_by": "name"},
+    }
 
 
 def setup_admin(app) -> Admin:
