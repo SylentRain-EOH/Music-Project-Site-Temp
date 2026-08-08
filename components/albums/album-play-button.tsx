@@ -7,7 +7,13 @@ import { PlayIcon } from "@/components/player/icons";
 import { usePlayer } from "@/components/player/player-provider";
 import type { Track } from "@/lib/music";
 
-export default function AlbumPlayButton({ tracks }: { tracks: Track[] }) {
+export default function AlbumPlayButton({
+  tracks,
+  onBeforeNavigate,
+}: {
+  tracks: Track[];
+  onBeforeNavigate?: () => void;
+}) {
   const { playTrack } = usePlayer();
   const router = useRouter();
   const firstTrack = tracks[0];
@@ -24,6 +30,7 @@ export default function AlbumPlayButton({ tracks }: { tracks: Track[] }) {
   }
 
   function handlePlay() {
+    onBeforeNavigate?.();
     playTrack(firstTrack, tracks);
     router.push(`/tracks/${firstTrack.id}`);
   }

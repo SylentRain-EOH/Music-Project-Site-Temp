@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, ViewTransition } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
@@ -16,6 +15,11 @@ import {
 } from "@/components/player/icons";
 import { usePlayer } from "@/components/player/player-provider";
 import VolumeControl from "@/components/player/volume-control";
+import {
+  flipFromRect,
+  saveCoverTransition,
+  takeCoverTransition,
+} from "@/lib/cover-transition";
 import type { Track, TrackDetail } from "@/lib/music";
 
 const playModeLabels = {
@@ -34,6 +38,7 @@ function formatTime(seconds: number): string {
 export default function PlayerView({ track }: { track: TrackDetail }) {
   const router = useRouter();
   const [playlistOpen, setPlaylistOpen] = useState(false);
+  const coverRef = useRef<HTMLDivElement | null>(null);
   const {
     currentTrack,
     queue,
@@ -72,6 +77,30 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
     }
   }, [track.album_slug, queue, router]);
 
+  useLayoutEffect(() => {
+    const transition = takeCoverTransition();
+    if (transition && coverRef.current) {
+      flipFromRect(coverRef.current, transition.rect);
+    }
+  }, []);
+
+  function handleBack() {
+    const cover = coverRef.current;
+    if (cover) {
+      const rect = cover.getBoundingClientRect();
+      saveCoverTransition({
+        slug: track.album_slug,
+        rect: {
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+        },
+      });
+    }
+    router.push(`/albums/${track.album_slug}`);
+  }
+
   function playFromQueue(nextTrack: Track) {
     playTrack(nextTrack, queue);
     setPlaylistOpen(false);
@@ -81,39 +110,37 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   return (
     <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
       <div className="shrink-0">
-        <Link
-          href={`/albums/${track.album_slug}`}
+        <button
+          type="button"
+          onClick={handleBack}
           aria-label="返回专辑详情"
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-foreground"
         >
           <BackIcon className="h-5 w-5" />
-        </Link>
+        </button>
       </div>
 
       <div className="grid min-h-0 flex-1 items-center gap-16 md:grid-cols-[minmax(0,420px)_1fr]">
         <div className="min-h-0">
-          <ViewTransition
-            name={`album-cover-${track.album_slug}`}
-            share="morph"
-            default="none"
+          <div
+            ref={coverRef}
+            className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
           >
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
-              {track.cover_url ? (
-                <Image
-                  src={track.cover_url}
-                  alt={track.album_title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 420px"
-                  className="object-cover"
-                  priority
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-sm text-zinc-500">
-                  暂无封面
-                </div>
-              )}
-            </div>
-          </ViewTransition>
+            {track.cover_url ? (
+              <Image
+                src={track.cover_url}
+                alt={track.album_title}
+                fill
+                sizes="(max-width: 768px) 100vw, 420px"
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+                暂无封面
+              </div>
+            )}
+          </div>
 
           <div className="mt-5 flex items-center gap-3">
             <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
