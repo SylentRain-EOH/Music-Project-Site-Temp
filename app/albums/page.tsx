@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 
 import AlbumList from "@/components/albums/album-list";
-import { getAlbums } from "@/lib/api";
+import { getAlbum, getAlbums } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "专辑",
@@ -10,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function AlbumsPage() {
-  const albums = await getAlbums();
+  const summaries = await getAlbums();
+  const albums = await Promise.all(
+    summaries.map((album) => getAlbum(album.slug))
+  );
 
   return (
     <div className="mx-auto h-[calc(100vh-6rem)] max-w-6xl overflow-hidden px-4 py-6">

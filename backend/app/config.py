@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     )
     media_root: Path = BASE_DIR / "media"
     cors_origins: list[str] = ["http://localhost:3000"]
+    secret_key: str = "dev-secret-change-me"
+    admin_username: str = "admin"
+    admin_password: str = "admin"
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",

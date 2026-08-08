@@ -1,6 +1,6 @@
 # Music Project Website Template
 
-一个个人音乐企划网站，功能参考塞壬唱片官网：专辑陈列、专辑详情、独立播放器页面、导航栏内嵌全局播放器（真实频谱、播放模式、播放列表），并采用静态导出部署。
+一个可作为模板使用的音乐企划网站，功能参考塞壬唱片官网：专辑陈列与搜索、专辑详情、独立播放器页面、导航栏内嵌全局播放器（真实频谱、播放模式、播放列表），并带管理后台与静态导出部署。
 
 ## 技术栈
 
@@ -44,13 +44,15 @@ soul-searching-site/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py          # FastAPI 入口：CORS、路由、/media 静态目录
+│   │   ├── admin.py         # SQLAdmin 管理后台（/admin）
 │   │   ├── config.py        # 配置（数据库、媒体目录、CORS）
 │   │   ├── database.py      # SQLAlchemy 异步引擎与会话
 │   │   ├── models.py        # albums / tracks / artists / credits 模型
 │   │   ├── schemas.py       # API 响应模型
 │   │   └── api/
 │   │       ├── albums.py    # 专辑列表/详情接口
-│   │       └── tracks.py    # 曲目详情/音频流（支持 Range）
+│   │       ├── tracks.py    # 曲目详情/音频流（支持 Range）
+│   │       └── uploads.py   # 音频/封面上传（受管理员账号保护）
 │   ├── scripts/
 │   │   ├── init_db.py       # 建表脚本
 │   │   └── seed_demo.py     # 演示数据（生成测试音频）
@@ -86,6 +88,10 @@ npm run dev
 
 本地环境文件：`.env.local`（`API_BASE_URL`）与 `.env.development`（`NEXT_PUBLIC_MEDIA_BASE_URL`）已在当前机器生成；新环境按 `.env.example` 自行创建。
 
+### 管理后台
+
+启动后端后访问 http://localhost:8000/admin ，默认账号 `admin` / `admin`（生产环境务必通过环境变量修改）。后台可以增删改查专辑、曲目、制作人和署名。
+
 ## 构建与部署
 
 静态导出构建会在构建时访问 FastAPI 生成全部页面，因此**构建前需要先启动后端**：
@@ -117,6 +123,21 @@ server {
 > 每次内容变化都需要重新构建前端（这是静态导出的特性）。
 
 ## 如何填充真实内容
+
+### 0. 推荐流程：管理后台 + 上传接口
+
+1. 用上传接口把音频和封面放入 `backend/media/`：
+
+```bash
+curl -u admin:admin -F "file=@song.mp3" http://localhost:8000/api/v1/uploads/audio
+curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/cover
+```
+
+接口会返回类似 `{"path": "audio/xxxx.mp3", "url": "/media/audio/xxxx.mp3"}` 的结果。
+
+2. 打开 `/admin`，把返回的 `path` 填进对应专辑的 `cover_path` 或曲目的 `audio_path`，再填写标题、曲号、歌词、制作人等信息。
+
+3. 重新构建前端即可发布：`npm run build`。
 
 ### 1. 音频与封面
 
@@ -164,3 +185,4 @@ server {
 - 开发模式下前端 3000、后端 8000 跨域；真实频谱依赖媒体响应带 CORS 头（FastAPI 已配置）
 - `npm run build` 使用 webpack 模式（Turbopack 在当前机器构建会报环境错误），脚本已固定
 - 静态导出不支持 `next start`，部署请使用 Nginx 等静态服务器
+- 管理后台默认账号仅供本地开发，部署前务必设置 `ADMIN_USERNAME`、`ADMIN_PASSWORD` 与 `SECRET_KEY`

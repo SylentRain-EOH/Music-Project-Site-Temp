@@ -1,7 +1,7 @@
 // 专辑列表：负责卡片网格、封面 FLIP 过渡，以及进入/返回时的渐入渐出。
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -10,15 +10,29 @@ import {
   saveCoverTransition,
   takeCoverTransition,
 } from "@/lib/cover-transition";
-import type { AlbumSummary } from "@/lib/music";
+import type { AlbumDetail } from "@/lib/music";
 
-export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
+export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
   const router = useRouter();
+  const [query, setQuery] = useState("");
   const [leavingSlug, setLeavingSlug] = useState<string | null>(null);
   const [returningSlug, setReturningSlug] = useState<string | null>(null);
   const [settledSlug, setSettledSlug] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // 按专辑标题或制作人姓名过滤。
+  const filteredAlbums = useMemo(() => {
+    const keyword = query.trim().toLowerCase();
+    if (!keyword) return albums;
+    return albums.filter(
+      (album) =>
+        album.title.toLowerCase().includes(keyword) ||
+        album.credits.some((credit) =>
+          credit.artist.name.toLowerCase().includes(keyword)
+        )
+    );
+  }, [albums, query]);
 
   // 挂载时若存在“从详情返回”的过渡记录，让对应封面飞回原位，并触发列表淡入。
   useLayoutEffect(() => {
@@ -73,9 +87,23 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
 
   return (
     <>
-      <h1 className={headingClassName}>专辑</h1>
+      <div className="flex items-center justify-between">
+        <h1 className={headingClassName}>专辑</h1>
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="搜索专辑或制作人"
+          className="w-56 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none"
+        />
+      </div>
       <div className="mt-6 grid grid-cols-2 content-start grid-rows-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {albums.map((album, index) => {
+        {filteredAlbums.length === 0 ? (
+          <p className="col-span-full text-sm text-zinc-400">
+            未找到相关专辑
+          </p>
+        ) : null}
+        {filteredAlbums.map((album, index) => {
           const isLeaveTarget = leavingSlug === album.slug;
           const isReturnTarget = returningSlug === album.slug;
           let className =
