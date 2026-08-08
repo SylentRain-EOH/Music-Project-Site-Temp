@@ -82,7 +82,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
     <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
       <div className="shrink-0">
         <Link
-          href={`/albums?album=${track.album_slug}`}
+          href={`/albums/${track.album_slug}`}
           aria-label="返回专辑详情"
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-foreground"
         >
