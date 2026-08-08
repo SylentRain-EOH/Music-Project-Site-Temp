@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import PageTransition from "@/components/page-transition";
 import {
   BackIcon,
   ListIcon,
@@ -59,9 +58,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
 
   useEffect(() => {
     if (currentTrack && currentTrack.id !== track.id) {
-      router.replace(`/tracks/${currentTrack.id}`, {
-        transitionTypes: ["nav-forward"],
-      });
+      router.replace(`/tracks/${currentTrack.id}`);
     }
     // 页面曲目跟随播放器当前曲目变化
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,13 +67,14 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   function playFromQueue(nextTrack: Track) {
     playTrack(nextTrack, queue);
     setPlaylistOpen(false);
-    router.replace(`/tracks/${nextTrack.id}`, {
-      transitionTypes: ["nav-forward"],
-    });
+    router.replace(`/tracks/${nextTrack.id}`);
   }
 
   return (
-    <PageTransition>
+    <ViewTransition
+      enter={{ "nav-back": "nav-back", default: "none" }}
+      exit={{ "nav-back": "nav-back", default: "none" }}
+    >
       <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
         <div className="shrink-0">
           <Link
@@ -108,7 +106,10 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               )}
             </div>
 
-            <div className="mt-5 flex items-center gap-3">
+            <div
+              key={track.id}
+              className="track-switch mt-5 flex items-center gap-3"
+            >
               <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
                 {formatTime(currentTime)}
               </span>
@@ -245,6 +246,6 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </div>
         </div>
       </div>
-    </PageTransition>
+    </ViewTransition>
   );
 }
