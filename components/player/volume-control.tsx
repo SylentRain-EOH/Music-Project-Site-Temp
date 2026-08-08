@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { MutedIcon, VolumeIcon } from "@/components/player/icons";
 import { usePlayer } from "@/components/player/player-provider";
@@ -12,13 +12,38 @@ export default function VolumeControl({
 }) {
   const { volume, muted, setVolume, toggleMute } = usePlayer();
   const [open, setOpen] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
   const isMuted = muted || volume === 0;
+
+  function handleMouseEnter() {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setOpen(true);
+  }
+
+  function handleMouseLeave() {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+    }
+    closeTimerRef.current = window.setTimeout(() => setOpen(false), 180);
+  }
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current !== null) {
+        window.clearTimeout(closeTimerRef.current);
+      }
+    },
+    []
+  );
 
   return (
     <div
       className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <button
         type="button"
