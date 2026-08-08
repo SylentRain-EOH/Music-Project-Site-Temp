@@ -85,8 +85,9 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
 
   useLayoutEffect(() => {
     const transition = takeCoverTransition();
-    if (!transition) return;
-    if (coverRef.current) flipFromRect(coverRef.current, transition.rect);
+    if (transition && coverRef.current) {
+      flipFromRect(coverRef.current, transition.rect);
+    }
     const raf = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(raf);
   }, []);
@@ -154,10 +155,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             )}
           </div>
 
-          <div
-            key={track.id}
-            className="track-switch mt-5 flex items-center gap-3"
-          >
+          <div className="mt-5 flex items-center gap-3">
             <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
               {formatTime(currentTime)}
             </span>

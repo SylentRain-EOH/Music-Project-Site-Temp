@@ -208,6 +208,19 @@ body {
   animation: sheet-up 240ms ease-out both;
 }
 
+@keyframes sheet-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.sheet-down {
+  animation: sheet-down 240ms ease-in both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
   ::view-transition-new(*),

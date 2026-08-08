@@ -6,8 +6,33 @@ import { siteConfig } from "@/lib/site";
 
 export default function CopyrightButton() {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
+
+  function closeSheet() {
+    if (!open || closing) return;
+    setClosing(true);
+    closeTimerRef.current = window.setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+      closeTimerRef.current = null;
+    }, 240);
+  }
+
+  function toggleSheet() {
+    if (open) {
+      closeSheet();
+      return;
+    }
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setClosing(false);
+    setOpen(true);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -18,18 +43,30 @@ export default function CopyrightButton() {
       ) {
         return;
       }
-      setOpen(false);
+      closeSheet();
     }
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current !== null) {
+        window.clearTimeout(closeTimerRef.current);
+      }
+    },
+    []
+  );
 
   return (
     <>
-      {open ? (
+      {open || closing ? (
         <div
           ref={sheetRef}
-          className="sheet-up fixed inset-x-0 bottom-0 z-40 border-t border-zinc-800 bg-background px-6 py-4 shadow-[0_-8px_30px_rgba(0,0,0,0.4)]"
+          className={`fixed inset-x-0 bottom-0 z-40 border-t border-zinc-800 bg-background px-6 py-4 shadow-[0_-8px_30px_rgba(0,0,0,0.4)] ${
+            closing ? "sheet-down" : "sheet-up"
+          }`}
         >
           <div className="mx-auto max-w-6xl">
             <h2 className="text-sm font-medium">版权信息</h2>
@@ -43,7 +80,7 @@ export default function CopyrightButton() {
       <button
         ref={buttonRef}
         type="button"
-        onClick={() => setOpen((value) => !value)}
+        onClick={toggleSheet}
         className="fixed bottom-4 right-4 z-50 rounded-full border border-zinc-700 px-4 py-2 text-xs text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground"
       >
         © 版权信息
