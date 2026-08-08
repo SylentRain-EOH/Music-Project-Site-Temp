@@ -1,3 +1,5 @@
+// 服务端 API 客户端：构建时从 FastAPI 拉取专辑/曲目数据，
+// 并把后端返回的相对媒体路径解析为可访问的 URL。
 import { cache } from "react";
 
 import type {

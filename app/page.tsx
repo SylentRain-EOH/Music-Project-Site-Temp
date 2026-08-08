@@ -1,3 +1,4 @@
+// 首页：企划介绍与进入专辑列表的入口。
 import Link from "next/link";
 
 import PageTransition from "@/components/page-transition";

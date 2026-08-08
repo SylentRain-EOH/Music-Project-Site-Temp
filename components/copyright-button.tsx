@@ -1,3 +1,4 @@
+// 联系页右下角版权按钮：点击弹出全宽底部信息栏，点击外部或再次点击按钮关闭。
 "use client";
 
 import { useEffect, useRef, useState } from "react";

@@ -1,3 +1,5 @@
+"""建表脚本：根据模型创建数据库表，可重复执行。"""
+
 import asyncio
 import sys
 from pathlib import Path

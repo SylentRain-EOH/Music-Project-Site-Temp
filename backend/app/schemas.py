@@ -1,3 +1,5 @@
+"""API 响应模型：与前端数据结构一一对应。"""
+
 from datetime import date
 
 from pydantic import BaseModel, ConfigDict

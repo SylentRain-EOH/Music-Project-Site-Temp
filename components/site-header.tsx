@@ -1,3 +1,4 @@
+// 顶部导航栏：左侧站点名（后续可替换为 Logo）、中间内嵌播放器、右侧导航链接。
 import Link from "next/link";
 
 import GlobalPlayer from "@/components/player/global-player";

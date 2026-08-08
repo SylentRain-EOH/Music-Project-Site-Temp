@@ -1,3 +1,4 @@
+// 专辑详情视图：负责封面 FLIP 飞入/飞出，以及信息区渐入渐出。
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
@@ -25,6 +26,7 @@ export default function AlbumDetailView({
     null
   );
 
+  // 挂载时若存在“从列表飞来”的过渡记录，封面从卡片位置 FLIP 到详情位置。
   useLayoutEffect(() => {
     const transition = takeCoverTransition();
     if (transition && coverRef.current) {
@@ -35,6 +37,7 @@ export default function AlbumDetailView({
   }, []);
 
   function handleBack() {
+    // 返回列表：先淡出信息区并记录封面位置，再跳转。
     const cover = coverRef.current;
     if (cover) {
       saveCoverTransition({
@@ -52,6 +55,7 @@ export default function AlbumDetailView({
   }
 
   function handlePlayLeave() {
+    // 进入播放器：让整个详情页淡出，播放按钮稍后执行跳转。
     setLeavingMode("player");
   }
 

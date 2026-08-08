@@ -1,3 +1,4 @@
+// 站点全局配置：名称、简介、联系邮箱与导航项。
 export const siteConfig = {
   name: "Soul Searching",
   description: "一个关于音乐与自我探索的个人音乐企划。",

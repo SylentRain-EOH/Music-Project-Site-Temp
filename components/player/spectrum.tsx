@@ -1,3 +1,4 @@
+// 真实频谱：用 Web Audio AnalyserNode 读取音频频段数据，canvas 逐帧绘制。
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -20,6 +21,7 @@ function getSource(
   audio: HTMLAudioElement,
   context: AudioContext
 ): MediaElementAudioSourceNode {
+  // 同一 audio 元素只能创建一次 MediaElementSource，缓存复用。
   const cached = sourceCache.get(audio);
   if (cached) return cached;
   const source = context.createMediaElementSource(audio);
@@ -32,6 +34,7 @@ function drawSpectrum(
   data: Uint8Array<ArrayBuffer>,
   playing: boolean
 ) {
+  // 将频域数据映射为 13 根条形图；未播放时绘制低平条。
   const dpr = window.devicePixelRatio || 1;
   if (canvas.width !== WIDTH * dpr) canvas.width = WIDTH * dpr;
   if (canvas.height !== HEIGHT * dpr) canvas.height = HEIGHT * dpr;
@@ -66,6 +69,7 @@ export default function Spectrum({ active }: { active: boolean }) {
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
+    // 首次播放时创建 AudioContext/Analyser，并保持音频输出连通。
     const audio = audioRef.current;
     const canvas = canvasRef.current;
     if (!audio || !canvas) return;

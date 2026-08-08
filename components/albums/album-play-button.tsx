@@ -1,3 +1,4 @@
+// 专辑播放按钮：播放第一首并把整张专辑设为队列，随后进入播放器页。
 "use client";
 
 import { useEffect } from "react";

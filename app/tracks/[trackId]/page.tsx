@@ -1,3 +1,4 @@
+// 播放器页（SSG）：构建时为每首曲目生成独立静态页面，数据交给 PlayerView 渲染。
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 

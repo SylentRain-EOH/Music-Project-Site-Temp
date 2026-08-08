@@ -1,3 +1,5 @@
+"""演示数据脚本：生成两段测试音频并写入一张演示专辑。"""
+
 import asyncio
 import math
 import struct
@@ -18,6 +20,7 @@ SAMPLE_RATE = 8000
 
 
 def _write_demo_tone(path: Path, frequency: float, duration: float = 2.0) -> None:
+    """用 wave 模块生成指定频率的短音，方便本地验收播放功能。"""
     if path.exists():
         return
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -35,6 +38,7 @@ def _write_demo_tone(path: Path, frequency: float, duration: float = 2.0) -> Non
 
 
 async def seed_demo() -> None:
+    """写入演示专辑、曲目、制作人与歌词；已存在时跳过。"""
     audio_dir = settings.media_root / "audio"
     first_path = audio_dir / "demo-01.wav"
     second_path = audio_dir / "demo-02.wav"

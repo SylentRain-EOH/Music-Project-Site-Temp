@@ -1,3 +1,4 @@
+// 专辑详情页（SSG）：构建时为每张专辑生成独立静态页面。
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 

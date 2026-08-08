@@ -1,3 +1,5 @@
+"""曲目接口：详情与音频流。"""
+
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -14,6 +16,7 @@ from app.schemas import ArtistOut, CreditOut, TrackDetail
 router = APIRouter(prefix="/tracks", tags=["tracks"])
 
 MEDIA_TYPES = {
+    # 音频流按文件后缀返回正确的 MIME 类型。
     ".mp3": "audio/mpeg",
     ".wav": "audio/wav",
     ".flac": "audio/flac",
@@ -24,6 +27,7 @@ MEDIA_TYPES = {
 
 @router.get("/{track_id}", response_model=TrackDetail)
 async def get_track(track_id: int, db: AsyncSession = Depends(get_db)) -> TrackDetail:
+    """返回单曲详情（含歌词与专辑信息）。"""
     result = await db.execute(
         select(Track)
         .options(
@@ -61,6 +65,7 @@ async def get_track(track_id: int, db: AsyncSession = Depends(get_db)) -> TrackD
 async def stream_track(
     track_id: int, db: AsyncSession = Depends(get_db)
 ) -> FileResponse:
+    """返回音频文件流；FileResponse 原生支持 Range，浏览器可拖动进度条。"""
     track = await db.get(Track, track_id)
     if track is None:
         raise HTTPException(status_code=404, detail="曲目不存在")

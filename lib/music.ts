@@ -1,3 +1,4 @@
+// 前端数据结构：与 FastAPI 返回的字段保持一致。
 export type Artist = {
   id: number;
   name: string;

@@ -1,3 +1,4 @@
+// 导航链接：根据当前路径高亮对应页面；切页前先让当前内容淡出再跳转。
 "use client";
 
 import type { MouseEvent } from "react";

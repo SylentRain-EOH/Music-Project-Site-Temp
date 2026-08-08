@@ -1,3 +1,4 @@
+// 专辑列表页（静态生成）：构建时拉取专辑摘要，交给 AlbumList 渲染。
 import type { Metadata } from "next";
 
 import AlbumList from "@/components/albums/album-list";

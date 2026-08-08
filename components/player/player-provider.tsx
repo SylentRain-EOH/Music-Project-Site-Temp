@@ -1,3 +1,5 @@
+// 全局播放器状态：维护当前曲目、队列、播放模式、音量与进度，
+// 并通过隐藏的 <audio> 元素驱动实际播放。
 "use client";
 
 import {
@@ -48,6 +50,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // 音量/静音变化时同步到 audio 元素。
     if (audioRef.current) {
       audioRef.current.volume = volume;
       audioRef.current.muted = muted;
@@ -55,6 +58,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, [volume, muted]);
 
   function playTrack(track: Track, nextQueue: Track[] = []) {
+    // 播放指定曲目；未提供队列时只播放单曲。
     const resolvedQueue = nextQueue.length > 0 ? nextQueue : [track];
     setQueue(resolvedQueue);
     setCurrentTrack(track);
@@ -73,6 +77,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }
 
   function playNext() {
+    // 下一首：顺序模式下循环，随机模式下随机跳到非当前曲目。
     if (!currentTrack || queue.length === 0) return;
     const index = queue.findIndex((track) => track.id === currentTrack.id);
     let nextIndex = (index + 1) % queue.length;
@@ -88,6 +93,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }
 
   function playPrevious() {
+    // 上一首：始终按队列逆序回退。
     if (!currentTrack || queue.length === 0) return;
     const index = queue.findIndex((track) => track.id === currentTrack.id);
     const previousTrack =
@@ -98,6 +104,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }
 
   function handleEnded() {
+    // 播放结束：单曲循环重播，其余模式交给下一首逻辑。
     if (playMode === "single") {
       const audio = audioRef.current;
       if (audio) {
@@ -110,6 +117,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }
 
   function cyclePlayMode() {
+    // 顺序播放 → 单曲循环 → 随机播放 循环切换。
     setPlayMode((mode) => {
       if (mode === "sequence") return "single";
       if (mode === "single") return "shuffle";
@@ -118,16 +126,19 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }
 
   function setVolume(value: number) {
+    // 音量变化；非 0 时自动取消静音。
     const next = Math.min(Math.max(value, 0), 1);
     setVolumeState(next);
     if (next > 0) setMuted(false);
   }
 
   function toggleMute() {
+    // 切换静音。
     setMuted((current) => !current);
   }
 
   function seekTo(time: number) {
+    // 拖动进度：更新 audio 元素播放位置。
     const audio = audioRef.current;
     if (!audio || !Number.isFinite(time)) return;
     audio.currentTime = Math.min(Math.max(time, 0), duration || time);

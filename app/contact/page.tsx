@@ -1,3 +1,4 @@
+// 联系页：展示联系方式，并提供右下角版权信息按钮。
 import type { Metadata } from "next";
 
 import CopyrightButton from "@/components/copyright-button";

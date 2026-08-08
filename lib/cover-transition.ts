@@ -1,3 +1,5 @@
+// 跨页面封面过渡工具：切换页面前把封面位置写入 sessionStorage，
+// 目标页面挂载后通过 FLIP 动画让封面从原位置飞入。
 export type CoverRect = {
   left: number;
   top: number;

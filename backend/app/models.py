@@ -1,3 +1,5 @@
+"""数据模型：专辑、曲目、制作人与 credits 关联表。"""
+
 from datetime import date, datetime
 
 from sqlalchemy import (
@@ -20,6 +22,8 @@ class Base(DeclarativeBase):
 
 
 class Album(Base):
+    """专辑：slug 用于 URL，cover_path 指向 /media 下的封面文件。"""
+
     __tablename__ = "albums"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -49,6 +53,8 @@ class Album(Base):
 
 
 class Track(Base):
+    """曲目：audio_path 指向音频文件，lyrics 保存纯文本歌词。"""
+
     __tablename__ = "tracks"
     __table_args__ = (
         UniqueConstraint("album_id", "track_number", name="uq_track_album_number"),
@@ -74,6 +80,8 @@ class Track(Base):
 
 
 class Artist(Base):
+    """制作人/音乐人。"""
+
     __tablename__ = "artists"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -83,6 +91,8 @@ class Artist(Base):
 
 
 class Credit(Base):
+    """专辑或单曲与制作人的关联，role 表示作曲/编曲/制作等身份。"""
+
     __tablename__ = "credits"
 
     id: Mapped[int] = mapped_column(primary_key=True)

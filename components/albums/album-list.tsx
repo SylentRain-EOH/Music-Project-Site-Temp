@@ -1,3 +1,4 @@
+// 专辑列表：负责卡片网格、封面 FLIP 过渡，以及进入/返回时的渐入渐出。
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
@@ -19,6 +20,7 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
   const [visible, setVisible] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // 挂载时若存在“从详情返回”的过渡记录，让对应封面飞回原位，并触发列表淡入。
   useLayoutEffect(() => {
     const transition = takeCoverTransition();
     let timer: number | undefined;
@@ -45,6 +47,7 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
   }, []);
 
   function handleSelect(slug: string) {
+    // 记录卡片封面位置，淡出其余内容后跳转到详情页。
     const cover = cardRefs.current[slug];
     if (!cover) return;
     saveCoverTransition({

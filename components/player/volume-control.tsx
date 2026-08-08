@@ -1,3 +1,4 @@
+// 音量控制：点击切换静音，悬停弹出滑杆；关闭带延迟以便鼠标移入滑杆。
 "use client";
 
 import { useEffect, useRef, useState } from "react";

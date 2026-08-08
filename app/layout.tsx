@@ -1,3 +1,4 @@
+// 根布局：锁定视口高度，全局挂载播放器状态，页面内容统一放入 <main>。
 import type { Metadata } from "next";
 
 import SiteHeader from "@/components/site-header";

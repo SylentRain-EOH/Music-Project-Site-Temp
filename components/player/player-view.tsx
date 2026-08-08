@@ -1,3 +1,4 @@
+// 独立播放器页视图：封面 FLIP、进度控制、播放模式、播放列表与歌词展示。
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -61,6 +62,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   } = usePlayer();
 
   useEffect(() => {
+    // 直接打开 URL 时，让播放器同步到当前曲目。
     if (currentTrack?.id !== track.id) {
       playTrack(track, [track]);
     }
@@ -69,6 +71,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   }, [track.id]);
 
   useEffect(() => {
+    // 底部播放器或播放列表切歌时，跟随当前曲目跳转到对应 URL。
     if (currentTrack && currentTrack.id !== track.id) {
       router.replace(`/tracks/${currentTrack.id}`);
     }
@@ -77,6 +80,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   }, [currentTrack?.id]);
 
   useEffect(() => {
+    // 预取返回的专辑详情页与队列中的其他曲目，减少切换等待。
     router.prefetch(`/albums/${track.album_slug}`);
     for (const item of queue) {
       router.prefetch(`/tracks/${item.id}`);
@@ -84,6 +88,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   }, [track.album_slug, queue, router]);
 
   useLayoutEffect(() => {
+    // 从详情/返回进入时，封面从记录的位置 FLIP 到播放器位置。
     const transition = takeCoverTransition();
     if (transition && coverRef.current) {
       flipFromRect(coverRef.current, transition.rect);
@@ -93,6 +98,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   }, []);
 
   function handleBack() {
+    // 返回专辑详情：记录封面位置并淡出当前页面。
     const cover = coverRef.current;
     if (cover) {
       const rect = cover.getBoundingClientRect();
@@ -111,6 +117,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   }
 
   function playFromQueue(nextTrack: Track) {
+    // 播放列表选曲：切换播放并跳转到对应 URL。
     playTrack(nextTrack, queue);
     setPlaylistOpen(false);
     router.replace(`/tracks/${nextTrack.id}`);

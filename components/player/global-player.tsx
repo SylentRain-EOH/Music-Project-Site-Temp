@@ -1,3 +1,4 @@
+// 导航栏内嵌播放器：固定宽度布局，曲名方框点击弹出播放列表，频谱读取真实频段数据。
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +28,7 @@ export default function GlobalPlayer() {
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
+  // 点击播放列表外部时关闭下拉列表。
   useEffect(() => {
     if (!playlistOpen) return;
     function handlePointerDown(event: PointerEvent) {
@@ -42,6 +44,7 @@ export default function GlobalPlayer() {
   }, [playlistOpen]);
 
   function playFromQueue(track: Track) {
+    // 从下拉列表选择曲目：切换播放并收起列表。
     playTrack(track, queue);
     setPlaylistOpen(false);
   }

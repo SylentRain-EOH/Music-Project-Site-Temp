@@ -1,3 +1,4 @@
+// 播放器相关 SVG 图标集：统一 stroke/fill 风格，尺寸通过 className 控制。
 type IconProps = {
   className?: string;
 };
