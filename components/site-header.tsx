@@ -1,14 +1,15 @@
 import Link from "next/link";
 
+import GlobalPlayer from "@/components/player/global-player";
 import { siteConfig } from "@/lib/site";
 
 export default function SiteHeader() {
   return (
     <header
       style={{ viewTransitionName: "site-header" }}
-      className="sticky top-0 z-40 border-b border-zinc-800 bg-background/90 backdrop-blur"
+      className="shrink-0 border-b border-zinc-800 bg-background/90 backdrop-blur"
     >
-      <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <nav className="mx-auto flex h-12 max-w-6xl items-center justify-between px-4">
         <Link href="/" className="text-base font-semibold tracking-wide">
           {/* 以后在这里替换为 Logo 组件 */}
           {siteConfig.name}
@@ -26,6 +27,7 @@ export default function SiteHeader() {
           ))}
         </ul>
       </nav>
+      <GlobalPlayer />
     </header>
   );
 }

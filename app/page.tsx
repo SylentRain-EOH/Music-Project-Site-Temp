@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
 export default function HomePage() {
   return (
     <PageTransition>
-      <div className="mx-auto flex min-h-[70vh] max-w-5xl flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-5xl flex-col items-center justify-center overflow-hidden px-4 text-center">
         <p className="text-xs uppercase tracking-[0.35em] text-zinc-400">
           A Music Project
         </p>

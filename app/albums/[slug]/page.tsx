@@ -48,7 +48,7 @@ export default async function AlbumDetailPage({
 
   return (
     <PageTransition>
-      <div className="mx-auto flex h-[calc(100vh-7.5rem)] max-w-5xl flex-col px-4 py-4">
+      <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
         <div className="shrink-0">
           <Link
             href="/albums"
@@ -59,7 +59,7 @@ export default async function AlbumDetailPage({
             <BackIcon className="h-5 w-5" />
           </Link>
         </div>
-        <div className="grid min-h-0 flex-1 items-center gap-10 md:grid-cols-[minmax(0,320px)_1fr]">
+        <div className="grid min-h-0 flex-1 items-center gap-14 md:grid-cols-[minmax(0,340px)_1fr]">
           <ViewTransition
             name={`album-cover-${album.slug}`}
             share="morph"
@@ -82,7 +82,7 @@ export default async function AlbumDetailPage({
               )}
             </div>
           </ViewTransition>
-          <div className="min-h-0 overflow-hidden">
+          <div className="min-h-0">
             <h1 className="text-3xl font-bold tracking-tight">{album.title}</h1>
             {album.release_date ? (
               <p className="mt-2 text-sm text-zinc-400">
@@ -106,7 +106,7 @@ export default async function AlbumDetailPage({
                 </ul>
               </div>
             ) : null}
-            <div className="mt-8">
+            <div className="-m-2 mt-8 p-2">
               <AlbumPlayButton tracks={album.tracks} />
             </div>
           </div>

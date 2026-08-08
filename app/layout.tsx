@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 
-import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
-import GlobalPlayer from "@/components/player/global-player";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { siteConfig } from "@/lib/site";
 
@@ -23,12 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" className="h-full antialiased">
-      <body className="flex min-h-full flex-col pb-20">
+      <body className="flex h-screen flex-col overflow-hidden">
         <PlayerProvider>
           <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-          <GlobalPlayer />
+          <main className="min-h-0 flex-1 overflow-hidden">{children}</main>
         </PlayerProvider>
       </body>
     </html>

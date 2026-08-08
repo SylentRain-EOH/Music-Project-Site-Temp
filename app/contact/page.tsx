@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <PageTransition>
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-5xl flex-col justify-center overflow-hidden px-4">
         <h1 className="text-3xl font-bold tracking-tight">联系</h1>
         <p className="mt-3 text-sm text-zinc-400">
           如果你对我们的音乐感兴趣，可以通过以下方式联系。

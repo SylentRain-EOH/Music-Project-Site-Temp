@@ -59,7 +59,9 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
 
   useEffect(() => {
     if (currentTrack && currentTrack.id !== track.id) {
-      router.replace(`/tracks/${currentTrack.id}`);
+      router.replace(`/tracks/${currentTrack.id}`, {
+        transitionTypes: ["nav-forward"],
+      });
     }
     // 页面曲目跟随播放器当前曲目变化
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,12 +70,14 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   function playFromQueue(nextTrack: Track) {
     playTrack(nextTrack, queue);
     setPlaylistOpen(false);
-    router.replace(`/tracks/${nextTrack.id}`);
+    router.replace(`/tracks/${nextTrack.id}`, {
+      transitionTypes: ["nav-forward"],
+    });
   }
 
   return (
     <PageTransition>
-      <div className="mx-auto flex h-[calc(100vh-7.5rem)] max-w-5xl flex-col px-4 py-4">
+      <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
         <div className="shrink-0">
           <Link
             href={`/albums/${track.album_slug}`}
@@ -85,7 +89,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </Link>
         </div>
 
-        <div className="grid min-h-0 flex-1 items-center gap-10 md:grid-cols-[minmax(0,320px)_1fr]">
+        <div className="grid min-h-0 flex-1 items-center gap-16 md:grid-cols-[minmax(0,420px)_1fr]">
           <div className="min-h-0">
             <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
               {track.cover_url ? (
@@ -93,7 +97,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
                   src={track.cover_url}
                   alt={track.album_title}
                   fill
-                  sizes="(max-width: 768px) 100vw, 320px"
+                  sizes="(max-width: 768px) 100vw, 420px"
                   className="object-cover"
                   priority
                 />
@@ -124,7 +128,10 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             </div>
           </div>
 
-          <div className="min-h-0 overflow-hidden">
+          <div
+            key={track.id}
+            className="track-switch flex min-h-0 flex-col justify-center"
+          >
             <h1 className="truncate text-3xl font-bold tracking-tight">
               {track.title}
             </h1>
@@ -142,15 +149,14 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             ) : null}
 
             {track.lyrics ? (
-              <section className="mt-5 max-h-40 overflow-y-auto rounded-lg border border-zinc-800 p-4">
-                <h2 className="text-sm font-medium text-zinc-400">歌词</h2>
-                <pre className="mt-3 whitespace-pre-wrap text-sm leading-7 text-zinc-200">
+              <div className="mt-5 max-h-44 overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-sm leading-8 text-zinc-300">
                   {track.lyrics}
                 </pre>
-              </section>
+              </div>
             ) : null}
 
-            <div className="mt-6 flex items-center justify-center gap-3">
+            <div className="mt-8 flex items-center justify-between">
               <button
                 type="button"
                 onClick={cyclePlayMode}
@@ -160,36 +166,38 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
                 <PlayModeIcon mode={playMode} className="h-4 w-4" />
               </button>
 
-              <button
-                type="button"
-                onClick={playPrevious}
-                className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
-                aria-label="上一首"
-              >
-                <PrevIcon className="h-5 w-5" />
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={playPrevious}
+                  className="flex h-11 w-11 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+                  aria-label="上一首"
+                >
+                  <PrevIcon className="h-5 w-5" />
+                </button>
 
-              <button
-                type="button"
-                onClick={togglePlay}
-                className="flex h-14 w-14 items-center justify-center rounded-full border border-zinc-600 text-zinc-100 transition-colors hover:border-zinc-400"
-                aria-label={isPlaying ? "暂停" : "播放"}
-              >
-                {isPlaying ? (
-                  <PauseIcon className="h-5 w-5" />
-                ) : (
-                  <PlayIcon className="h-5 w-5" />
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={togglePlay}
+                  className="flex h-16 w-16 items-center justify-center rounded-full border border-zinc-600 text-zinc-100 transition-colors hover:border-zinc-400"
+                  aria-label={isPlaying ? "暂停" : "播放"}
+                >
+                  {isPlaying ? (
+                    <PauseIcon className="h-6 w-6" />
+                  ) : (
+                    <PlayIcon className="h-6 w-6" />
+                  )}
+                </button>
 
-              <button
-                type="button"
-                onClick={playNext}
-                className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
-                aria-label="下一首"
-              >
-                <NextIcon className="h-5 w-5" />
-              </button>
+                <button
+                  type="button"
+                  onClick={playNext}
+                  className="flex h-11 w-11 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+                  aria-label="下一首"
+                >
+                  <NextIcon className="h-5 w-5" />
+                </button>
+              </div>
 
               <div className="relative">
                 <button
