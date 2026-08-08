@@ -2,6 +2,11 @@
 
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
+from sqladmin.filters import (
+    AllUniqueStringValuesFilter,
+    BooleanFilter,
+    ForeignKeyFilter,
+)
 from starlette.requests import Request
 
 from app.config import settings
@@ -44,7 +49,7 @@ class AlbumAdmin(ModelView, model=Album):
         Album.published,
     ]
     column_searchable_list = [Album.title, Album.slug]
-    column_filters = [Album.published]
+    column_filters = [BooleanFilter(Album.published)]
     column_labels = {
         Album.id: "ID",
         Album.slug: "URL 标识",
@@ -76,7 +81,7 @@ class TrackAdmin(ModelView, model=Track):
         Track.duration_seconds,
     ]
     column_searchable_list = [Track.title]
-    column_filters = [Track.album_id]
+    column_filters = [ForeignKeyFilter(Track.album_id, Album.title)]
     column_labels = {
         Track.id: "ID",
         Track.album_id: "专辑 ID",
@@ -117,7 +122,10 @@ class CreditAdmin(ModelView, model=Credit):
         Credit.artist_id,
         Credit.role,
     ]
-    column_filters = [Credit.role]
+    column_filters = [
+        ForeignKeyFilter(Credit.artist_id, Artist.name),
+        AllUniqueStringValuesFilter(Credit.role),
+    ]
     column_labels = {
         Credit.id: "ID",
         Credit.album_id: "专辑 ID",
