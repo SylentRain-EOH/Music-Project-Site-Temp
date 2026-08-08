@@ -51,7 +51,7 @@ export default async function AlbumDetailPage({
       <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
         <div className="shrink-0">
         <Link
-          href="/albums"
+          href={`/albums?album=${album.slug}`}
           aria-label="返回专辑列表"
             className="inline-flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-foreground"
           >

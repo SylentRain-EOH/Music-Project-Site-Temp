@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-import AlbumCard from "@/components/albums/album-card";
+import AlbumGrid from "@/components/albums/album-grid";
 import PageTransition from "@/components/page-transition";
-import { getAlbums } from "@/lib/api";
+import { getAlbum, getAlbums } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "专辑",
@@ -10,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function AlbumsPage() {
-  const albums = await getAlbums();
+  const summaries = await getAlbums();
+  const albums = await Promise.all(
+    summaries.map((album) => getAlbum(album.slug))
+  );
 
   return (
     <PageTransition>
@@ -19,10 +22,8 @@ export default async function AlbumsPage() {
         {albums.length === 0 ? (
           <p className="mt-6 text-sm text-zinc-400">还没有已发布的专辑。</p>
         ) : (
-          <div className="mt-6 grid grid-cols-2 content-start grid-rows-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {albums.map((album) => (
-              <AlbumCard key={album.id} album={album} />
-            ))}
+          <div className="mt-6">
+            <AlbumGrid albums={albums} />
           </div>
         )}
       </div>
