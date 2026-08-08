@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import GlobalPlayer from "@/components/player/global-player";
+import NavLinks from "@/components/nav-links";
 import { siteConfig } from "@/lib/site";
 
 export default function SiteHeader() {
@@ -17,17 +18,7 @@ export default function SiteHeader() {
         <div className="flex min-w-0 flex-1 justify-center">
           <GlobalPlayer />
         </div>
-        <nav className="flex items-center gap-6 text-sm text-zinc-300">
-          {siteConfig.nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="transition-colors hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <NavLinks />
       </div>
     </header>
   );

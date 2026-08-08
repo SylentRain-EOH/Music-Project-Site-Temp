@@ -21,7 +21,9 @@ export default function AlbumDetailView({
   const router = useRouter();
   const coverRef = useRef<HTMLDivElement | null>(null);
   const [entered, setEntered] = useState(false);
-  const [leaving, setLeaving] = useState(false);
+  const [leavingMode, setLeavingMode] = useState<"list" | "player" | null>(
+    null
+  );
 
   useLayoutEffect(() => {
     const transition = takeCoverTransition();
@@ -45,14 +47,23 @@ export default function AlbumDetailView({
         },
       });
     }
-    setLeaving(true);
+    setLeavingMode("list");
     window.setTimeout(() => router.push("/albums"), 240);
   }
 
-  const infoHidden = !entered || leaving;
+  function handlePlayLeave() {
+    setLeavingMode("player");
+  }
+
+  const pageHidden = !entered || leavingMode === "player";
+  const infoHidden = !entered || leavingMode !== null;
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
+    <div
+      className={`mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4 transition-opacity duration-300 ${
+        pageHidden ? "opacity-0" : "opacity-100"
+      }`}
+    >
       <div
         className={`shrink-0 transition-opacity duration-200 ${
           infoHidden ? "opacity-0" : "opacity-100"
@@ -121,6 +132,7 @@ export default function AlbumDetailView({
             <AlbumPlayButton
               tracks={album.tracks}
               onBeforeNavigate={() => {
+                handlePlayLeave();
                 if (coverRef.current) {
                   const rect = coverRef.current.getBoundingClientRect();
                   saveCoverTransition({

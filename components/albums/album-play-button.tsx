@@ -30,7 +30,14 @@ export default function AlbumPlayButton({
   }
 
   function handlePlay() {
-    onBeforeNavigate?.();
+    if (onBeforeNavigate) {
+      onBeforeNavigate();
+      window.setTimeout(() => {
+        playTrack(firstTrack, tracks);
+        router.push(`/tracks/${firstTrack.id}`);
+      }, 240);
+      return;
+    }
     playTrack(firstTrack, tracks);
     router.push(`/tracks/${firstTrack.id}`);
   }

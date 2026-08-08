@@ -15,25 +15,27 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
   const router = useRouter();
   const [leavingSlug, setLeavingSlug] = useState<string | null>(null);
   const [returningSlug, setReturningSlug] = useState<string | null>(null);
-  const [entering, setEntering] = useState(true);
+  const [visible, setVisible] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useLayoutEffect(() => {
     const transition = takeCoverTransition();
-    if (!transition) return;
-    const cover = cardRefs.current[transition.slug];
-    if (cover) {
-      flipFromRect(cover, transition.rect);
+    let timer: number | undefined;
+    if (transition) {
+      const cover = cardRefs.current[transition.slug];
+      if (cover) {
+        flipFromRect(cover, transition.rect);
+      }
+      timer = window.setTimeout(() => setReturningSlug(null), 520);
     }
     const raf = requestAnimationFrame(() => {
-      setReturningSlug(transition.slug);
-      setEntering(false);
-      requestAnimationFrame(() => setEntering(true));
+      if (transition) setReturningSlug(transition.slug);
+      setVisible(false);
+      requestAnimationFrame(() => setVisible(true));
     });
-    const timer = window.setTimeout(() => setReturningSlug(null), 520);
     return () => {
       cancelAnimationFrame(raf);
-      window.clearTimeout(timer);
+      if (timer !== undefined) window.clearTimeout(timer);
     };
   }, []);
 
@@ -53,8 +55,7 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
     window.setTimeout(() => router.push(`/albums/${slug}`), 220);
   }
 
-  const headingHidden =
-    leavingSlug !== null || (returningSlug !== null && !entering);
+  const headingHidden = leavingSlug !== null || !visible;
 
   return (
     <>
@@ -71,9 +72,7 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
             album.slug === leavingSlug || album.slug === returningSlug;
           const hidden =
             (leavingSlug !== null && album.slug !== leavingSlug) ||
-            (returningSlug !== null &&
-              !entering &&
-              album.slug !== returningSlug);
+            (!visible && album.slug !== returningSlug);
           return (
             <button
               key={album.id}

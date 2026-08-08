@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import CopyrightButton from "@/components/copyright-button";
 import PageTransition from "@/components/page-transition";
 import { siteConfig } from "@/lib/site";
 
@@ -29,6 +30,7 @@ export default function ContactPage() {
           <li className="text-zinc-400">社交媒体账号：待补充</li>
         </ul>
       </div>
+      <CopyrightButton />
     </PageTransition>
   );
 }

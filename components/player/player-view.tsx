@@ -38,6 +38,8 @@ function formatTime(seconds: number): string {
 export default function PlayerView({ track }: { track: TrackDetail }) {
   const router = useRouter();
   const [playlistOpen, setPlaylistOpen] = useState(false);
+  const [entered, setEntered] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const coverRef = useRef<HTMLDivElement | null>(null);
   const {
     currentTrack,
@@ -82,6 +84,8 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
     if (transition && coverRef.current) {
       flipFromRect(coverRef.current, transition.rect);
     }
+    const raf = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   function handleBack() {
@@ -98,7 +102,8 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
         },
       });
     }
-    router.push(`/albums/${track.album_slug}`);
+    setLeaving(true);
+    window.setTimeout(() => router.push(`/albums/${track.album_slug}`), 240);
   }
 
   function playFromQueue(nextTrack: Track) {
@@ -108,7 +113,11 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
+    <div
+      className={`mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4 transition-opacity duration-300 ${
+        entered && !leaving ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div className="shrink-0">
         <button
           type="button"
