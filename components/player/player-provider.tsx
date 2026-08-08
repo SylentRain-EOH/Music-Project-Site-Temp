@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useRef,
   useState,
   type ReactNode,
@@ -17,12 +18,16 @@ type PlayerContextValue = {
   currentTime: number;
   duration: number;
   playMode: "sequence" | "single" | "shuffle";
+  volume: number;
+  muted: boolean;
   playTrack: (track: Track, queue?: Track[]) => void;
   togglePlay: () => void;
   playNext: () => void;
   playPrevious: () => void;
   seekTo: (time: number) => void;
   cyclePlayMode: () => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
 };
 
 const PlayerContext = createContext<PlayerContextValue | null>(null);
@@ -36,7 +41,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [playMode, setPlayMode] = useState<"sequence" | "single" | "shuffle">(
     "sequence"
   );
+  const [volume, setVolumeState] = useState(1);
+  const [muted, setMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+      audioRef.current.muted = muted;
+    }
+  }, [volume, muted]);
 
   function playTrack(track: Track, nextQueue: Track[] = []) {
     const resolvedQueue = nextQueue.length > 0 ? nextQueue : [track];
@@ -101,6 +115,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function setVolume(value: number) {
+    const next = Math.min(Math.max(value, 0), 1);
+    setVolumeState(next);
+    if (next > 0) setMuted(false);
+  }
+
+  function toggleMute() {
+    setMuted((current) => !current);
+  }
+
   function seekTo(time: number) {
     const audio = audioRef.current;
     if (!audio || !Number.isFinite(time)) return;
@@ -117,12 +141,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         currentTime,
         duration,
         playMode,
+        volume,
+        muted,
         playTrack,
         togglePlay,
         playNext,
         playPrevious,
         seekTo,
         cyclePlayMode,
+        setVolume,
+        toggleMute,
       }}
     >
       {children}

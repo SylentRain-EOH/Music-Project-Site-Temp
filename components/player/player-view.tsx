@@ -15,6 +15,7 @@ import {
   PrevIcon,
 } from "@/components/player/icons";
 import { usePlayer } from "@/components/player/player-provider";
+import VolumeControl from "@/components/player/volume-control";
 import type { Track, TrackDetail } from "@/lib/music";
 
 const playModeLabels = {
@@ -191,45 +192,55 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               </button>
             </div>
 
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setPlaylistOpen((open) => !open)}
-                className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
-                aria-label="播放列表"
-                aria-expanded={playlistOpen}
-              >
-                <ListIcon className="h-4 w-4" />
-              </button>
+            <div className="flex items-center gap-1">
+              <VolumeControl />
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setPlaylistOpen((open) => !open)}
+                  className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+                  aria-label="播放列表"
+                  aria-expanded={playlistOpen}
+                >
+                  <ListIcon className="h-4 w-4" />
+                </button>
 
-              {playlistOpen ? (
-                <div className="absolute bottom-full right-0 z-50 mb-2 max-h-64 w-64 overflow-y-auto rounded-lg border border-zinc-800 bg-background p-2 shadow-xl">
-                  {queue.length === 0 ? (
-                    <p className="px-2 py-3 text-sm text-zinc-400">
-                      播放列表为空
-                    </p>
-                  ) : (
-                    queue.map((item) => {
-                      const isCurrent = item.id === currentTrack?.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => playFromQueue(item)}
-                          className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm transition-colors hover:bg-zinc-800 ${
-                            isCurrent ? "text-foreground" : "text-zinc-300"
-                          }`}
-                        >
-                          <span className="w-5 shrink-0 text-right text-xs text-zinc-500">
-                            {item.track_number}
-                          </span>
-                          <span className="truncate">{item.title}</span>
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-              ) : null}
+                {playlistOpen ? (
+                  <div className="absolute bottom-full right-0 z-50 mb-2 max-h-64 w-64 overflow-y-auto rounded-lg border border-zinc-800 bg-background p-2 shadow-xl">
+                    {queue.length === 0 ? (
+                      <p className="px-2 py-3 text-sm text-zinc-400">
+                        播放列表为空
+                      </p>
+                    ) : (
+                      queue.map((item) => {
+                        const isCurrent = item.id === currentTrack?.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => playFromQueue(item)}
+                            className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm transition-colors ${
+                              isCurrent
+                                ? "bg-zinc-800 font-medium text-foreground"
+                                : "text-zinc-300 hover:bg-zinc-800"
+                            }`}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                                isCurrent ? "bg-foreground" : "bg-transparent"
+                              }`}
+                            />
+                            <span className="w-5 shrink-0 text-right text-xs text-zinc-500">
+                              {item.track_number}
+                            </span>
+                            <span className="truncate">{item.title}</span>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>

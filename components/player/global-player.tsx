@@ -10,6 +10,7 @@ import {
 } from "@/components/player/icons";
 import { usePlayer } from "./player-provider";
 import Spectrum from "./spectrum";
+import VolumeControl from "./volume-control";
 
 export default function GlobalPlayer() {
   const { currentTrack, isPlaying, togglePlay, playNext, playPrevious } =
@@ -58,6 +59,7 @@ export default function GlobalPlayer() {
             >
               <NextIcon className="h-3.5 w-3.5" />
             </button>
+            <VolumeControl />
           </div>
         </>
       ) : (
