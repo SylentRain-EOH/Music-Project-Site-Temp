@@ -66,7 +66,7 @@ async def seed_demo() -> None:
         session.add(album)
         await session.flush()
 
-        artist = Artist(name="Soul Searching")
+        artist = Artist(name="请输入文本")
         session.add(artist)
         await session.flush()
 
