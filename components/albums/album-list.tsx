@@ -15,6 +15,7 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
   const router = useRouter();
   const [leavingSlug, setLeavingSlug] = useState<string | null>(null);
   const [returningSlug, setReturningSlug] = useState<string | null>(null);
+  const [settledSlug, setSettledSlug] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -25,8 +26,12 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
       const cover = cardRefs.current[transition.slug];
       if (cover) {
         flipFromRect(cover, transition.rect);
+        cover.closest("button")?.classList.add("ring-0", "shadow-none");
       }
-      timer = window.setTimeout(() => setReturningSlug(null), 520);
+      timer = window.setTimeout(() => {
+        setReturningSlug(null);
+        setSettledSlug(transition.slug);
+      }, 520);
     }
     const raf = requestAnimationFrame(() => {
       if (transition) setReturningSlug(transition.slug);
@@ -55,35 +60,46 @@ export default function AlbumList({ albums }: { albums: AlbumSummary[] }) {
     window.setTimeout(() => router.push(`/albums/${slug}`), 220);
   }
 
-  const headingHidden = leavingSlug !== null || !visible;
+  const headingClassName = `text-2xl font-bold tracking-tight transition-opacity duration-300 ${
+    leavingSlug !== null
+      ? "opacity-0"
+      : visible
+        ? "heading-rise opacity-100"
+        : "opacity-0"
+  }`;
 
   return (
     <>
-      <h1
-        className={`text-2xl font-bold tracking-tight transition-opacity duration-300 ${
-          headingHidden ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        专辑
-      </h1>
+      <h1 className={headingClassName}>专辑</h1>
       <div className="mt-6 grid grid-cols-2 content-start grid-rows-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {albums.map((album) => {
-          const isTarget =
-            album.slug === leavingSlug || album.slug === returningSlug;
-          const hidden =
-            (leavingSlug !== null && album.slug !== leavingSlug) ||
-            (!visible && album.slug !== returningSlug);
+        {albums.map((album, index) => {
+          const isLeaveTarget = leavingSlug === album.slug;
+          const isReturnTarget = returningSlug === album.slug;
+          let className =
+            "group rounded-lg transition-all duration-300 ";
+          let animationDelay: string | undefined;
+
+          if (isLeaveTarget || isReturnTarget) {
+            className += "shadow-none ring-0 opacity-100";
+          } else if (leavingSlug !== null || !visible) {
+            className += "opacity-0 ring-1 ring-transparent";
+          } else if (settledSlug === album.slug) {
+            className +=
+              "opacity-100 ring-1 ring-transparent hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700";
+          } else {
+            className +=
+              "card-fade-in opacity-100 ring-1 ring-transparent hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700";
+            animationDelay = `${index * 40}ms`;
+          }
+
           return (
             <button
               key={album.id}
               type="button"
               onClick={() => handleSelect(album.slug)}
               title={album.title}
-              className={`group rounded-lg transition-all duration-300 ${
-                isTarget
-                  ? "shadow-none ring-0"
-                  : "ring-1 ring-transparent hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700"
-              } ${hidden ? "opacity-0" : "opacity-100"}`}
+              className={className}
+              style={animationDelay ? { animationDelay } : undefined}
             >
               <div
                 ref={(element) => {

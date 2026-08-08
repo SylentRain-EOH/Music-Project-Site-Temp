@@ -27,6 +27,10 @@ export function takeCoverTransition(): CoverTransition | null {
   }
 }
 
+export function hasCoverTransition(): boolean {
+  return sessionStorage.getItem(STORAGE_KEY) !== null;
+}
+
 export function flipFromRect(
   element: HTMLElement,
   from: CoverRect,

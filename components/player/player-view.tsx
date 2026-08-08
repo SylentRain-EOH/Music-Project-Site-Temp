@@ -17,6 +17,7 @@ import { usePlayer } from "@/components/player/player-provider";
 import VolumeControl from "@/components/player/volume-control";
 import {
   flipFromRect,
+  hasCoverTransition,
   saveCoverTransition,
   takeCoverTransition,
 } from "@/lib/cover-transition";
@@ -38,7 +39,10 @@ function formatTime(seconds: number): string {
 export default function PlayerView({ track }: { track: TrackDetail }) {
   const router = useRouter();
   const [playlistOpen, setPlaylistOpen] = useState(false);
-  const [entered, setEntered] = useState(false);
+  const [entered, setEntered] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return hasCoverTransition() ? false : true;
+  });
   const [leaving, setLeaving] = useState(false);
   const coverRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -81,9 +85,8 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
 
   useLayoutEffect(() => {
     const transition = takeCoverTransition();
-    if (transition && coverRef.current) {
-      flipFromRect(coverRef.current, transition.rect);
-    }
+    if (!transition) return;
+    if (coverRef.current) flipFromRect(coverRef.current, transition.rect);
     const raf = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(raf);
   }, []);
@@ -151,7 +154,10 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             )}
           </div>
 
-          <div className="mt-5 flex items-center gap-3">
+          <div
+            key={track.id}
+            className="track-switch mt-5 flex items-center gap-3"
+          >
             <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
               {formatTime(currentTime)}
             </span>

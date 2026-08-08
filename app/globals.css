@@ -162,6 +162,52 @@ body {
   animation: page-fade-in 400ms ease-out both;
 }
 
+/* 专辑页标题上飞 */
+@keyframes heading-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.heading-rise {
+  animation: heading-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 专辑卡片浮现 */
+@keyframes card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card-fade-in {
+  animation: card-fade-in 500ms ease-out both;
+}
+
+/* 全宽底部版权栏 */
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sheet-up {
+  animation: sheet-up 240ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
   ::view-transition-new(*),
