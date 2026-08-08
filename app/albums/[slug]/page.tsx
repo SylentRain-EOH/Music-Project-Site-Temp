@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ViewTransition } from "react";
 
 import AlbumPlayButton from "@/components/albums/album-play-button";
 import PageTransition from "@/components/page-transition";
@@ -58,22 +59,28 @@ export default async function AlbumDetailPage({
           </Link>
         </div>
         <div className="grid min-h-0 flex-1 items-center gap-14 md:grid-cols-[minmax(0,340px)_1fr]">
-          <div className="cover-enter relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
-            {album.cover_url ? (
-              <Image
-                src={album.cover_url}
-                alt={album.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 320px"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-sm text-zinc-500">
-                暂无封面
-              </div>
-            )}
-          </div>
+          <ViewTransition
+            name={`album-cover-${album.slug}`}
+            share="morph"
+            default="none"
+          >
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
+              {album.cover_url ? (
+                <Image
+                  src={album.cover_url}
+                  alt={album.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 320px"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+                  暂无封面
+                </div>
+              )}
+            </div>
+          </ViewTransition>
           <div className="min-h-0">
             <h1 className="text-3xl font-bold tracking-tight">{album.title}</h1>
             {album.release_date ? (

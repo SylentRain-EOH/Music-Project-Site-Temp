@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -92,22 +92,28 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
 
       <div className="grid min-h-0 flex-1 items-center gap-16 md:grid-cols-[minmax(0,420px)_1fr]">
         <div className="min-h-0">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
-            {track.cover_url ? (
-              <Image
-                src={track.cover_url}
-                alt={track.album_title}
-                fill
-                sizes="(max-width: 768px) 100vw, 420px"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-sm text-zinc-500">
-                暂无封面
-              </div>
-            )}
-          </div>
+          <ViewTransition
+            name={`album-cover-${track.album_slug}`}
+            share="morph"
+            default="none"
+          >
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
+              {track.cover_url ? (
+                <Image
+                  src={track.cover_url}
+                  alt={track.album_title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 420px"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+                  暂无封面
+                </div>
+              )}
+            </div>
+          </ViewTransition>
 
           <div className="mt-5 flex items-center gap-3">
             <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
