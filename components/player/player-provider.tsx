@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
   type ReactNode,
+  type RefObject,
 } from "react";
 
 import type { Track } from "@/lib/music";
@@ -20,6 +21,7 @@ type PlayerContextValue = {
   playMode: "sequence" | "single" | "shuffle";
   volume: number;
   muted: boolean;
+  audioRef: RefObject<HTMLAudioElement | null>;
   playTrack: (track: Track, queue?: Track[]) => void;
   togglePlay: () => void;
   playNext: () => void;
@@ -143,6 +145,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         playMode,
         volume,
         muted,
+        audioRef,
         playTrack,
         togglePlay,
         playNext,
@@ -158,6 +161,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         ref={audioRef}
         src={currentTrack?.audio_url}
         autoPlay={currentTrack !== null}
+        crossOrigin="anonymous"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onLoadedMetadata={(event) => {
