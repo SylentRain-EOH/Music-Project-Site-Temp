@@ -8,7 +8,9 @@ export default function Spectrum({ active }: { active: boolean }) {
           key={bar}
           className="spectrum-bar w-[3px] rounded-full bg-zinc-400"
           style={{
-            animationDelay: `${bar * 0.12}s`,
+            height: `${35 + ((bar * 37) % 60)}%`,
+            animationDuration: `${0.6 + ((bar * 53) % 40) / 100}s`,
+            animationDelay: `${((bar * 29) % 50) / 100}s`,
             animationPlayState: active ? "running" : "paused",
           }}
         />

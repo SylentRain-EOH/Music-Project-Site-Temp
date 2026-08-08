@@ -50,13 +50,17 @@ export default function GlobalPlayer() {
     <div className="flex h-12 items-center gap-3">
       {currentTrack ? (
         <>
+          <div className="flex w-20 shrink-0 justify-center">
+            <Spectrum active={isPlaying} />
+          </div>
+
           <div ref={dropdownRef} className="relative shrink-0">
             <button
               type="button"
               onClick={() => setPlaylistOpen((value) => !value)}
               aria-label="播放列表"
               aria-expanded={playlistOpen}
-              className="block w-48 truncate text-left text-sm text-zinc-300 transition-colors hover:text-foreground"
+              className="block w-48 truncate rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-left text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground"
             >
               {currentTrack.title}
             </button>
@@ -91,10 +95,6 @@ export default function GlobalPlayer() {
                 )}
               </div>
             ) : null}
-          </div>
-
-          <div className="flex w-20 shrink-0 justify-center">
-            <Spectrum active={isPlaying} />
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
