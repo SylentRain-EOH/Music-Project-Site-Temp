@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { PlayIcon } from "@/components/player/icons";
@@ -10,6 +11,13 @@ export default function AlbumPlayButton({ tracks }: { tracks: Track[] }) {
   const { playTrack } = usePlayer();
   const router = useRouter();
   const firstTrack = tracks[0];
+  const firstTrackId = firstTrack?.id;
+
+  useEffect(() => {
+    if (firstTrackId) {
+      router.prefetch(`/tracks/${firstTrackId}`);
+    }
+  }, [firstTrackId, router]);
 
   if (!firstTrack) {
     return <p className="text-sm text-zinc-400">暂无曲目</p>;

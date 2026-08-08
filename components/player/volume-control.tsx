@@ -5,7 +5,11 @@ import { useState } from "react";
 import { MutedIcon, VolumeIcon } from "@/components/player/icons";
 import { usePlayer } from "@/components/player/player-provider";
 
-export default function VolumeControl() {
+export default function VolumeControl({
+  vertical = false,
+}: {
+  vertical?: boolean;
+}) {
   const { volume, muted, setVolume, toggleMute } = usePlayer();
   const [open, setOpen] = useState(false);
   const isMuted = muted || volume === 0;
@@ -38,7 +42,14 @@ export default function VolumeControl() {
             step={0.05}
             value={isMuted ? 0 : volume}
             onChange={(event) => setVolume(Number(event.target.value))}
-            className="h-1 w-28 cursor-pointer accent-zinc-400"
+            className={
+              vertical
+                ? "h-28 w-1 cursor-pointer accent-zinc-400"
+                : "h-1 w-28 cursor-pointer accent-zinc-400"
+            }
+            style={
+              vertical ? { writingMode: "vertical-lr", direction: "rtl" } : undefined
+            }
             aria-label="音量"
           />
         </div>

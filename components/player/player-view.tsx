@@ -65,6 +65,13 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id]);
 
+  useEffect(() => {
+    router.prefetch(`/albums/${track.album_slug}`);
+    for (const item of queue) {
+      router.prefetch(`/tracks/${item.id}`);
+    }
+  }, [track.album_slug, queue, router]);
+
   function playFromQueue(nextTrack: Track) {
     playTrack(nextTrack, queue);
     setPlaylistOpen(false);
@@ -193,7 +200,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             </div>
 
             <div className="flex items-center gap-1">
-              <VolumeControl />
+              <VolumeControl vertical />
               <div className="relative">
                 <button
                   type="button"
