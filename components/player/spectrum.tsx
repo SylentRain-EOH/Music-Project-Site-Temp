@@ -1,4 +1,4 @@
-const bars = [0, 1, 2, 3, 4, 5, 6];
+const bars = Array.from({ length: 13 }, (_, index) => index);
 
 export default function Spectrum({ active }: { active: boolean }) {
   return (

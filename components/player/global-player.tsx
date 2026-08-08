@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 import {
   NextIcon,
@@ -8,28 +8,96 @@ import {
   PlayIcon,
   PrevIcon,
 } from "@/components/player/icons";
+import type { Track } from "@/lib/music";
+
 import { usePlayer } from "./player-provider";
 import Spectrum from "./spectrum";
 import VolumeControl from "./volume-control";
 
 export default function GlobalPlayer() {
-  const { currentTrack, isPlaying, togglePlay, playNext, playPrevious } =
-    usePlayer();
+  const {
+    currentTrack,
+    queue,
+    isPlaying,
+    togglePlay,
+    playNext,
+    playPrevious,
+    playTrack,
+  } = usePlayer();
+  const [playlistOpen, setPlaylistOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!playlistOpen) return;
+    function handlePointerDown(event: PointerEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setPlaylistOpen(false);
+      }
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [playlistOpen]);
+
+  function playFromQueue(track: Track) {
+    playTrack(track, queue);
+    setPlaylistOpen(false);
+  }
 
   return (
     <div className="flex h-12 items-center gap-3">
       {currentTrack ? (
         <>
-          <Link
-            href={`/tracks/${currentTrack.id}`}
-            className="max-w-56 min-w-0"
-          >
-            <p className="truncate text-sm text-zinc-300 transition-colors hover:text-foreground">
+          <div ref={dropdownRef} className="relative shrink-0">
+            <button
+              type="button"
+              onClick={() => setPlaylistOpen((value) => !value)}
+              aria-label="播放列表"
+              aria-expanded={playlistOpen}
+              className="block w-48 truncate text-left text-sm text-zinc-300 transition-colors hover:text-foreground"
+            >
               {currentTrack.title}
-            </p>
-          </Link>
-          <Spectrum active={isPlaying} />
-          <div className="flex items-center gap-1">
+            </button>
+
+            {playlistOpen ? (
+              <div className="absolute left-0 top-full z-50 mt-2 max-h-64 w-48 overflow-y-auto rounded-lg border border-zinc-800 bg-background p-1 shadow-xl">
+                {queue.length === 0 ? (
+                  <p className="px-2 py-2 text-xs text-zinc-500">
+                    播放列表为空
+                  </p>
+                ) : (
+                  queue.map((item) => {
+                    const isCurrent = item.id === currentTrack.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => playFromQueue(item)}
+                        className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs transition-colors ${
+                          isCurrent
+                            ? "bg-zinc-800 font-medium text-foreground"
+                            : "text-zinc-300 hover:bg-zinc-800"
+                        }`}
+                      >
+                        <span className="w-4 shrink-0 text-right text-zinc-500">
+                          {item.track_number}
+                        </span>
+                        <span className="truncate">{item.title}</span>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="flex w-20 shrink-0 justify-center">
+            <Spectrum active={isPlaying} />
+          </div>
+
+          <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
               onClick={playPrevious}
