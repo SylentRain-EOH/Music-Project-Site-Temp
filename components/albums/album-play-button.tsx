@@ -25,9 +25,7 @@ export default function AlbumPlayButton({ tracks }: { tracks: Track[] }) {
 
   function handlePlay() {
     playTrack(firstTrack, tracks);
-    router.push(`/tracks/${firstTrack.id}`, {
-      transitionTypes: ["nav-forward"],
-    });
+    router.push(`/tracks/${firstTrack.id}`);
   }
 
   return (

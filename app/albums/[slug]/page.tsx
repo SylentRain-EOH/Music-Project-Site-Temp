@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ViewTransition } from "react";
 
 import AlbumPlayButton from "@/components/albums/album-play-button";
 import PageTransition from "@/components/page-transition";
@@ -50,38 +49,31 @@ export default async function AlbumDetailPage({
     <PageTransition>
       <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4">
         <div className="shrink-0">
-          <Link
-            href="/albums"
-            transitionTypes={["nav-back"]}
-            aria-label="返回专辑列表"
+        <Link
+          href="/albums"
+          aria-label="返回专辑列表"
             className="inline-flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-foreground"
           >
             <BackIcon className="h-5 w-5" />
           </Link>
         </div>
         <div className="grid min-h-0 flex-1 items-center gap-14 md:grid-cols-[minmax(0,340px)_1fr]">
-          <ViewTransition
-            name={`album-cover-${album.slug}`}
-            share="morph"
-            default="none"
-          >
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
-              {album.cover_url ? (
-                <Image
-                  src={album.cover_url}
-                  alt={album.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 320px"
-                  className="object-cover"
-                  priority
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-sm text-zinc-500">
-                  暂无封面
-                </div>
-              )}
-            </div>
-          </ViewTransition>
+          <div className="cover-enter relative aspect-square overflow-hidden rounded-lg bg-zinc-800">
+            {album.cover_url ? (
+              <Image
+                src={album.cover_url}
+                alt={album.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 320px"
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+                暂无封面
+              </div>
+            )}
+          </div>
           <div className="min-h-0">
             <h1 className="text-3xl font-bold tracking-tight">{album.title}</h1>
             {album.release_date ? (

@@ -22,7 +22,6 @@ export default function GlobalPlayer() {
         <>
           <Link
             href={`/tracks/${currentTrack.id}`}
-            transitionTypes={["nav-forward"]}
             className="max-w-56 min-w-0"
           >
             <p className="truncate text-sm text-zinc-300 transition-colors hover:text-foreground">

@@ -140,6 +140,38 @@ body {
   animation: track-switch-in 240ms ease-out both;
 }
 
+/* 页面切换进入动画 */
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-fade-in {
+  animation: page-fade-in 260ms ease-out both;
+}
+
+/* 专辑封面进入动画 */
+@keyframes cover-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.cover-enter {
+  animation: cover-enter 300ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
   ::view-transition-new(*),

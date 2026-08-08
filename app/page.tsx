@@ -18,7 +18,6 @@ export default function HomePage() {
         </p>
         <Link
           href="/albums"
-          transitionTypes={["nav-forward"]}
           className="mt-10 rounded-full border border-zinc-700 px-6 py-3 text-sm transition-colors hover:border-zinc-500"
         >
           浏览专辑
