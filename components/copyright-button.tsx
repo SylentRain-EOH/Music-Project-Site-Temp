@@ -73,7 +73,7 @@ export default function CopyrightButton() {
             <h2 className="text-sm font-medium">版权信息</h2>
             <p className="mt-2 text-xs leading-6 text-zinc-400">
               © {new Date().getFullYear()} {siteConfig.name}
-              。本站展示的音乐作品及相关内容版权归 Soul Searching 企划所有，未经授权请勿转载或用于商业用途。
+              。本站展示的音乐作品及相关内容版权归 {siteConfig.name} 企划所有，未经授权请勿转载或用于商业用途。
             </p>
           </div>
         </div>

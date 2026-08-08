@@ -9,7 +9,7 @@ export default function HomePage() {
     <PageTransition>
       <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-5xl flex-col items-center justify-center overflow-hidden px-4 text-center">
         <p className="text-xs uppercase tracking-[0.35em] text-zinc-400">
-          A Music Project
+          Music Project
         </p>
         <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
           {siteConfig.name}
