@@ -92,6 +92,15 @@ npm run dev
 
 启动后端后访问 http://localhost:8000/admin ，默认账号 `admin` / `admin`（生产环境务必通过环境变量修改）。后台可以增删改查专辑、曲目、制作人和署名。
 
+完整操作流程见 [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)：从添加制作人、上传音频封面、创建专辑曲目署名，到发布前端的每一步都有说明。
+
+## 数据库
+
+- 模板默认面向 PostgreSQL（`backend/app/config.py` 中的默认连接串）
+- 本地验收/开发可使用 SQLite：`export DATABASE_URL="sqlite+aiosqlite:///./soulsearching_dev.db"`
+- 当前机器本地使用 SQLite，数据库文件为 `backend/soulsearching_dev.db`（已被 git 忽略）
+- 生产环境建议使用 PostgreSQL，切换只需修改 `DATABASE_URL` 并执行建表脚本
+
 ## 构建与部署
 
 静态导出构建会在构建时访问 FastAPI 生成全部页面，因此**构建前需要先启动后端**：
