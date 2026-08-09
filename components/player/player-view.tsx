@@ -207,7 +207,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </span>
         </div>
 
-        <div className="flex min-w-0 items-center justify-start gap-4">
+        <div className="-ml-6 flex min-w-0 items-center justify-start gap-4">
           <button
             type="button"
             onClick={cyclePlayMode}
