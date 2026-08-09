@@ -144,7 +144,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
         <div className="grid w-[80%] max-w-5xl items-center gap-x-24 gap-y-10 md:grid-cols-[minmax(0,360px)_1fr]">
         <div
           ref={coverRef}
-          className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
+          className="relative aspect-square self-start overflow-hidden rounded-lg bg-zinc-800"
         >
           {track.cover_url ? (
             <Image
@@ -162,7 +162,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           )}
         </div>
 
-        <div className="flex min-h-0 min-w-0 flex-col justify-center">
+        <div className="flex min-h-0 min-w-0 flex-col justify-center self-start">
           <div key={track.id} className="track-switch">
             <h1 className="truncate text-3xl font-bold tracking-tight">
               {track.title}
@@ -188,7 +188,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </div>
         </div>
 
-        <div className="flex min-w-0 items-center gap-3 md:w-[calc(100%+64px)]">
+        <div className="flex min-w-0 items-center gap-3 md:w-[calc(100%+96px)] md:justify-self-center">
           <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
             {formatTime(currentTime)}
           </span>
