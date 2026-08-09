@@ -179,7 +179,10 @@ ADMIN_PASSWORD=强密码
 SECRET_KEY=随机长字符串
 ```
 
-2. 使用 PostgreSQL：把 `DATABASE_URL` 改成 PostgreSQL 连接串，并先执行建表
+2. 使用 PostgreSQL：把 `DATABASE_URL` 改成 PostgreSQL 连接串，并先执行建表。
+   连接串格式为 `postgresql+psycopg://用户名:密码@主机:端口/数据库名`，
+   例如 `postgresql+psycopg://username:password@localhost:5432/database`，
+   其中的用户名、密码、数据库名都需要按你的实际配置修改。
 
    如果之前使用 SQLite 且已有数据，先执行建表，再运行迁移脚本保留数据：
 

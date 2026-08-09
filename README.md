@@ -113,10 +113,10 @@ CREATE DATABASE soulsearching OWNER soulsearching;
 \q
 ```
 
-2. 设置连接串（后端目录下）：
+2. 设置连接串（后端目录下），`username`、`password`、`database` 按你的实际 PostgreSQL 配置修改：
 
 ```bash
-export DATABASE_URL="postgresql+psycopg://soulsearching:your-password@localhost:5432/soulsearching"
+export DATABASE_URL="postgresql+psycopg://username:password@localhost:5432/database"
 ```
 
 3. 在 PostgreSQL 中建表：
