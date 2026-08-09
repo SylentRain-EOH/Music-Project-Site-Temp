@@ -181,6 +181,13 @@ SECRET_KEY=随机长字符串
 
 2. 使用 PostgreSQL：把 `DATABASE_URL` 改成 PostgreSQL 连接串，并先执行建表
 
+   如果之前使用 SQLite 且已有数据，先执行建表，再运行迁移脚本保留数据：
+
+   ```bash
+   python scripts/init_db.py
+   python scripts/migrate_sqlite_to_postgres.py --replace
+   ```
+
 3. 配置 HTTPS：上传接口和管理后台使用密码认证，公网必须走 HTTPS
 
 4. 备份 `backend/media` 目录与数据库，音频和封面属于不可再生资产

@@ -55,7 +55,8 @@ soul-searching-site/
 │   │       └── uploads.py   # 音频/封面上传（受管理员账号保护）
 │   ├── scripts/
 │   │   ├── init_db.py       # 建表脚本
-│   │   └── seed_demo.py     # 演示数据（生成测试音频）
+│   │   ├── seed_demo.py     # 演示数据（生成测试音频）
+│   │   └── migrate_sqlite_to_postgres.py  # SQLite → PostgreSQL 数据迁移
 │   ├── media/               # 音频与封面文件（git 忽略）
 │   └── README.md            # 后端运行说明
 ├── .env.example             # 前端环境变量示例
@@ -100,6 +101,39 @@ npm run dev
 - 本地验收/开发可使用 SQLite：`export DATABASE_URL="sqlite+aiosqlite:///./soulsearching_dev.db"`
 - 当前机器本地使用 SQLite，数据库文件为 `backend/soulsearching_dev.db`（已被 git 忽略）
 - 生产环境建议使用 PostgreSQL，切换只需修改 `DATABASE_URL` 并执行建表脚本
+
+### 切换到 PostgreSQL
+
+1. 在本地 PostgreSQL 中创建数据库和用户：
+
+```bash
+psql -U postgres
+CREATE USER soulsearching WITH PASSWORD 'your-password';
+CREATE DATABASE soulsearching OWNER soulsearching;
+\q
+```
+
+2. 设置连接串（后端目录下）：
+
+```bash
+export DATABASE_URL="postgresql+psycopg://soulsearching:your-password@localhost:5432/soulsearching"
+```
+
+3. 在 PostgreSQL 中建表：
+
+```bash
+python scripts/init_db.py
+```
+
+4. 如果 SQLite 里已有数据，迁移到 PostgreSQL（会保留 ID 与关联关系）：
+
+```bash
+python scripts/migrate_sqlite_to_postgres.py --replace
+```
+
+> `--replace` 表示目标库已有数据时先清空再迁移；首次迁移可放心使用。
+
+5. 启动后端，确认数据正常后即可切换完成。
 
 ## 构建与部署
 
