@@ -20,12 +20,12 @@
 ```bash
 cd backend
 source .venv/bin/activate
-export DATABASE_URL="sqlite+aiosqlite:///./soulsearching_dev.db"
+cp .env.example .env   # 首次使用；修改其中的 DATABASE_URL
 python scripts/init_db.py
 uvicorn app.main:app --reload --port 8000
 ```
 
-`init_db.py` 只需在数据库首次使用或删库后执行；之后正常启动后端即可。
+`init_db.py` 只需在数据库首次使用或重建后执行；之后正常启动后端即可。
 
 ### 2.2 登录
 
@@ -183,13 +183,6 @@ SECRET_KEY=随机长字符串
    连接串格式为 `postgresql+psycopg://用户名:密码@主机:端口/数据库名`，
    例如 `postgresql+psycopg://username:password@localhost:5432/database`，
    其中的用户名、密码、数据库名都需要按你的实际配置修改。
-
-   如果之前使用 SQLite 且已有数据，先执行建表，再运行迁移脚本保留数据：
-
-   ```bash
-   python scripts/init_db.py
-   python scripts/migrate_sqlite_to_postgres.py --replace
-   ```
 
 3. 配置 HTTPS：上传接口和管理后台使用密码认证，公网必须走 HTTPS
 

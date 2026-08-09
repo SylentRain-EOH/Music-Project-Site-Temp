@@ -5,7 +5,7 @@
 ## 技术栈
 
 - 前端：Next.js 16（App Router + 静态导出）、React 19、Tailwind CSS 4、TypeScript
-- 后端：FastAPI、SQLAlchemy 2（异步）、PostgreSQL（本地验收可用 SQLite）
+- 后端：FastAPI、SQLAlchemy 2（异步）、PostgreSQL
 - 部署形态：前端 `out/` 静态文件 + Nginx；`/api/v1` 与 `/media` 反向代理到 FastAPI
 
 ## 目录结构与文件功能
@@ -55,8 +55,7 @@ soul-searching-site/
 │   │       └── uploads.py   # 音频/封面上传（受管理员账号保护）
 │   ├── scripts/
 │   │   ├── init_db.py       # 建表脚本
-│   │   ├── seed_demo.py     # 演示数据（生成测试音频）
-│   │   └── migrate_sqlite_to_postgres.py  # SQLite → PostgreSQL 数据迁移
+│   │   └── seed_demo.py     # 演示数据（生成测试音频）
 │   ├── media/               # 音频与封面文件（git 忽略）
 │   └── README.md            # 后端运行说明
 ├── .env.example             # 前端环境变量示例
@@ -67,18 +66,15 @@ soul-searching-site/
 
 ### 后端（终端 1）
 
-无 PostgreSQL 时可用 SQLite 验收：
+复制 `backend/.env.example` 为 `backend/.env`，把 `DATABASE_URL` 改成你的 PostgreSQL 连接串，然后执行：
 
 ```bash
 cd backend
 source .venv/bin/activate
-export DATABASE_URL="sqlite+aiosqlite:///./soulsearching_dev.db"
 python scripts/init_db.py
 python scripts/seed_demo.py
 uvicorn app.main:app --reload --port 8000
 ```
-
-有 PostgreSQL 时，复制 `backend/.env.example` 为 `.env` 并修改连接串，再执行同样的 init/seed 命令。
 
 ### 前端（终端 2）
 
@@ -97,26 +93,21 @@ npm run dev
 
 ## 数据库
 
-- 模板默认面向 PostgreSQL（`backend/app/config.py` 中的默认连接串）
-- 本地验收/开发可使用 SQLite：`export DATABASE_URL="sqlite+aiosqlite:///./soulsearching_dev.db"`
-- 当前机器本地使用 SQLite，数据库文件为 `backend/soulsearching_dev.db`（已被 git 忽略）
-- 生产环境建议使用 PostgreSQL，切换只需修改 `DATABASE_URL` 并执行建表脚本
+本模板直接使用 PostgreSQL（`backend/app/config.py` 中的默认连接串为 PostgreSQL）。
 
-### 切换到 PostgreSQL
-
-1. 在本地 PostgreSQL 中创建数据库和用户：
+1. 在 PostgreSQL 中创建数据库和用户：
 
 ```bash
 psql -U postgres
-CREATE USER soulsearching WITH PASSWORD 'your-password';
-CREATE DATABASE soulsearching OWNER soulsearching;
+CREATE USER username WITH PASSWORD 'your-password';
+CREATE DATABASE database OWNER username;
 \q
 ```
 
-2. 设置连接串（后端目录下），`username`、`password`、`database` 按你的实际 PostgreSQL 配置修改：
+2. 在 `backend/.env` 中设置连接串，`username`、`password`、`database` 按你的实际 PostgreSQL 配置修改：
 
-```bash
-export DATABASE_URL="postgresql+psycopg://username:password@localhost:5432/database"
+```text
+DATABASE_URL=postgresql+psycopg://username:password@localhost:5432/database
 ```
 
 3. 在 PostgreSQL 中建表：
@@ -125,15 +116,7 @@ export DATABASE_URL="postgresql+psycopg://username:password@localhost:5432/datab
 python scripts/init_db.py
 ```
 
-4. 如果 SQLite 里已有数据，迁移到 PostgreSQL（会保留 ID 与关联关系）：
-
-```bash
-python scripts/migrate_sqlite_to_postgres.py --replace
-```
-
-> `--replace` 表示目标库已有数据时先清空再迁移；首次迁移可放心使用。
-
-5. 启动后端，确认数据正常后即可切换完成。
+4. 启动后端即可使用。
 
 ## 构建与部署
 
@@ -207,7 +190,7 @@ curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/co
 - 版权文案：编辑 `components/copyright-button.tsx`
 - 站点简介：编辑 `lib/site.ts` 中的 `description`
 - Logo：把 `components/site-header.tsx` 中的文字替换为 Logo 组件
-- 演示数据：删除 `backend/soulsearching_dev.db` 后重新执行 `init_db.py` + `seed_demo.py`，或直接录入真实数据
+- 演示数据：执行 `seed_demo.py` 会写入一张演示专辑；若已有同名专辑会跳过，需要重灌时先删除对应记录或重建数据库
 
 ### 4. 歌词
 
