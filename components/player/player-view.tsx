@@ -141,7 +141,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
       </div>
 
       <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-        <div className="grid w-[80%] max-w-5xl items-center gap-x-16 gap-y-8 md:grid-cols-[minmax(0,320px)_1fr]">
+        <div className="grid w-[80%] max-w-5xl items-center gap-x-24 gap-y-10 md:grid-cols-[minmax(0,360px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
@@ -151,7 +151,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               src={track.cover_url}
               alt={track.album_title}
               fill
-              sizes="(max-width: 768px) 100vw, 320px"
+              sizes="(max-width: 768px) 100vw, 360px"
               className="object-cover"
               priority
             />
@@ -188,7 +188,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3 md:w-[calc(100%+64px)]">
           <span className="w-10 shrink-0 text-right text-xs tabular-nums text-zinc-400">
             {formatTime(currentTime)}
           </span>
@@ -207,7 +207,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </span>
         </div>
 
-        <div className="flex min-w-0 items-center justify-start gap-2">
+        <div className="flex min-w-0 items-center justify-start gap-4">
           <button
             type="button"
             onClick={cyclePlayMode}

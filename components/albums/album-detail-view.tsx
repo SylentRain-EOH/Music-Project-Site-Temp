@@ -119,7 +119,7 @@ export default function AlbumDetailView({
       </button>
 
       <div className="flex min-h-0 flex-1 items-center justify-center">
-        <div className="grid h-[60%] w-[80%] max-w-5xl items-stretch gap-16 md:grid-cols-[minmax(0,340px)_1fr]">
+        <div className="grid w-[80%] max-w-5xl items-stretch gap-16 md:grid-cols-[minmax(0,340px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square self-start overflow-hidden rounded-lg bg-zinc-800"
