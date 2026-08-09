@@ -221,6 +221,59 @@ body {
   animation: sheet-down 240ms ease-in both;
 }
 
+/* 专辑详情左右翻页 */
+@keyframes slide-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-80px);
+  }
+}
+
+@keyframes slide-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(80px);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-out-left {
+  animation: slide-out-left 240ms ease-in both;
+}
+
+.slide-out-right {
+  animation: slide-out-right 240ms ease-in both;
+}
+
+.slide-in-left {
+  animation: slide-in-left 320ms ease-out both;
+}
+
+.slide-in-right {
+  animation: slide-in-right 320ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
   ::view-transition-new(*),

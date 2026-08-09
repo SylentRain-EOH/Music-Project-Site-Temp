@@ -13,7 +13,9 @@ import {
 } from "@/components/player/icons";
 import {
   flipFromRect,
+  saveNavDirection,
   saveCoverTransition,
+  takeNavDirection,
   takeCoverTransition,
 } from "@/lib/cover-transition";
 import type { AlbumDetail, AlbumSummary } from "@/lib/music";
@@ -33,6 +35,11 @@ export default function AlbumDetailView({
   const [leavingMode, setLeavingMode] = useState<"list" | "player" | null>(
     null
   );
+  const [enterDirection] = useState<"left" | "right" | null>(() => {
+    if (typeof window === "undefined") return null;
+    return takeNavDirection();
+  });
+  const [slideOut, setSlideOut] = useState<"left" | "right" | null>(null);
 
   // 挂载时若存在“从列表飞来”的过渡记录，封面从卡片位置 FLIP 到详情位置。
   useLayoutEffect(() => {
@@ -67,21 +74,11 @@ export default function AlbumDetailView({
     setLeavingMode("player");
   }
 
-  function goToAlbum(slug: string) {
-    const cover = coverRef.current;
-    if (cover) {
-      const rect = cover.getBoundingClientRect();
-      saveCoverTransition({
-        slug,
-        rect: {
-          left: rect.left,
-          top: rect.top,
-          width: rect.width,
-          height: rect.height,
-        },
-      });
-    }
-    router.push(`/albums/${slug}`);
+  function goToAlbum(slug: string, direction: "left" | "right") {
+    // 左右翻页：记录滑入方向，当前内容先滑出再跳转。
+    saveNavDirection(direction);
+    setSlideOut(direction);
+    window.setTimeout(() => router.push(`/albums/${slug}`), 240);
   }
 
   const pageHidden = !entered || leavingMode === "player";
@@ -110,7 +107,9 @@ export default function AlbumDetailView({
 
       <button
         type="button"
-        onClick={() => previousAlbum && goToAlbum(previousAlbum.slug)}
+        onClick={() =>
+          previousAlbum && goToAlbum(previousAlbum.slug, "right")
+        }
         disabled={!previousAlbum}
         aria-label="上一个专辑"
         className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
@@ -118,7 +117,19 @@ export default function AlbumDetailView({
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
 
-      <div className="flex min-h-0 flex-1 items-center justify-center">
+      <div
+        className={`flex min-h-0 flex-1 items-center justify-center ${
+          slideOut === "left"
+            ? "slide-out-left"
+            : slideOut === "right"
+              ? "slide-out-right"
+              : enterDirection === "left"
+                ? "slide-in-left"
+                : enterDirection === "right"
+                  ? "slide-in-right"
+                  : ""
+        }`}
+      >
         <div className="grid w-[80%] max-w-5xl items-stretch gap-16 md:grid-cols-[minmax(0,340px)_1fr]">
         <div
           ref={coverRef}
@@ -182,7 +193,7 @@ export default function AlbumDetailView({
 
       <button
         type="button"
-        onClick={() => nextAlbum && goToAlbum(nextAlbum.slug)}
+        onClick={() => nextAlbum && goToAlbum(nextAlbum.slug, "left")}
         disabled={!nextAlbum}
         aria-label="下一个专辑"
         className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"

@@ -13,6 +13,7 @@ export type CoverTransition = {
 };
 
 const STORAGE_KEY = "soul-searching-cover-transition";
+const NAV_DIRECTION_KEY = "album-nav-direction";
 
 export function saveCoverTransition(transition: CoverTransition) {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(transition));
@@ -31,6 +32,16 @@ export function takeCoverTransition(): CoverTransition | null {
 
 export function hasCoverTransition(): boolean {
   return sessionStorage.getItem(STORAGE_KEY) !== null;
+}
+
+export function saveNavDirection(direction: "left" | "right") {
+  sessionStorage.setItem(NAV_DIRECTION_KEY, direction);
+}
+
+export function takeNavDirection(): "left" | "right" | null {
+  const value = sessionStorage.getItem(NAV_DIRECTION_KEY);
+  sessionStorage.removeItem(NAV_DIRECTION_KEY);
+  return value === "left" || value === "right" ? value : null;
 }
 
 export function flipFromRect(
