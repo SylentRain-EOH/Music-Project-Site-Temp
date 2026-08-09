@@ -57,8 +57,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     }
   }, [volume, muted]);
 
+  const currentTrackId = currentTrack?.id;
+
+  useEffect(() => {
+    // 曲目变化后主动开始播放，保证在任何页面通过播放列表切歌都生效。
+    if (!currentTrackId) return;
+    void audioRef.current?.play().catch(() => {});
+  }, [currentTrackId]);
+
   function playTrack(track: Track, nextQueue: Track[] = []) {
     // 播放指定曲目；未提供队列时只播放单曲。
+    if (currentTrack?.id === track.id) {
+      void audioRef.current?.play().catch(() => {});
+      return;
+    }
     const resolvedQueue = nextQueue.length > 0 ? nextQueue : [track];
     setQueue(resolvedQueue);
     setCurrentTrack(track);

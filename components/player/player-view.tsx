@@ -140,8 +140,8 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
         </button>
       </div>
 
-      <div className="grid min-h-0 flex-1 items-center gap-16 md:grid-cols-[minmax(0,420px)_1fr]">
-        <div className="min-h-0">
+      <div className="grid min-h-0 flex-1 items-stretch gap-16 md:grid-cols-[minmax(0,420px)_1fr]">
+        <div className="flex min-h-0 flex-col">
           <div
             ref={coverRef}
             className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
@@ -182,7 +182,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-col justify-center">
+        <div className="flex min-h-0 flex-col justify-between">
           <div key={track.id} className="track-switch">
             <h1 className="truncate text-3xl font-bold tracking-tight">
               {track.title}
@@ -200,16 +200,16 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               </p>
             ) : null}
 
-            {track.lyrics ? (
-              <div className="mt-5 max-h-44 overflow-y-auto">
+            <div className="mt-5 h-44 overflow-y-auto">
+              {track.lyrics ? (
                 <pre className="whitespace-pre-wrap text-sm leading-8 text-zinc-300">
                   {track.lyrics}
                 </pre>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
 
-          <div className="mt-8 flex items-center justify-between">
+          <div className="flex items-center justify-between pt-6">
             <button
               type="button"
               onClick={cyclePlayMode}
