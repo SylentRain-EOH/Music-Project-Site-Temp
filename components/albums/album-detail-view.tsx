@@ -6,18 +6,26 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import AlbumPlayButton from "@/components/albums/album-play-button";
-import { BackIcon } from "@/components/player/icons";
+import {
+  BackIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@/components/player/icons";
 import {
   flipFromRect,
   saveCoverTransition,
   takeCoverTransition,
 } from "@/lib/cover-transition";
-import type { AlbumDetail } from "@/lib/music";
+import type { AlbumDetail, AlbumSummary } from "@/lib/music";
 
 export default function AlbumDetailView({
   album,
+  previousAlbum,
+  nextAlbum,
 }: {
   album: AlbumDetail;
+  previousAlbum?: AlbumSummary | null;
+  nextAlbum?: AlbumSummary | null;
 }) {
   const router = useRouter();
   const coverRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +67,23 @@ export default function AlbumDetailView({
     setLeavingMode("player");
   }
 
+  function goToAlbum(slug: string) {
+    const cover = coverRef.current;
+    if (cover) {
+      const rect = cover.getBoundingClientRect();
+      saveCoverTransition({
+        slug,
+        rect: {
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+        },
+      });
+    }
+    router.push(`/albums/${slug}`);
+  }
+
   const pageHidden = !entered || leavingMode === "player";
   const infoHidden = !entered || leavingMode !== null;
 
@@ -83,7 +108,17 @@ export default function AlbumDetailView({
         </button>
       </div>
 
-      <div className="grid min-h-0 flex-1 items-center gap-14 md:grid-cols-[minmax(0,340px)_1fr]">
+      <button
+        type="button"
+        onClick={() => previousAlbum && goToAlbum(previousAlbum.slug)}
+        disabled={!previousAlbum}
+        aria-label="上一个专辑"
+        className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        <ChevronLeftIcon className="h-5 w-5" />
+      </button>
+
+      <div className="grid min-h-0 flex-1 items-center gap-20 md:grid-cols-[minmax(0,340px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
@@ -115,11 +150,12 @@ export default function AlbumDetailView({
               发行日期：{album.release_date}
             </p>
           ) : null}
-          {album.description ? (
-            <p className="mt-4 line-clamp-3 text-sm leading-7 text-zinc-300">
-              {album.description}
+          <div className="mt-6">
+            <h2 className="text-sm font-medium text-zinc-400">专辑简介</h2>
+            <p className="mt-2 max-h-40 overflow-y-auto text-sm leading-7 text-zinc-300">
+              {album.description || "暂无简介"}
             </p>
-          ) : null}
+          </div>
           {album.credits.length > 0 ? (
             <div className="mt-5">
               <h2 className="text-sm font-medium text-zinc-400">制作人员</h2>
@@ -154,6 +190,16 @@ export default function AlbumDetailView({
           </div>
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={() => nextAlbum && goToAlbum(nextAlbum.slug)}
+        disabled={!nextAlbum}
+        aria-label="下一个专辑"
+        className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        <ChevronRightIcon className="h-5 w-5" />
+      </button>
     </div>
   );
 }

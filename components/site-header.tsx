@@ -9,7 +9,7 @@ export default function SiteHeader() {
   return (
     <header
       style={{ viewTransitionName: "site-header" }}
-      className="shrink-0 border-b border-zinc-800 bg-background/90 backdrop-blur"
+      className="relative z-40 shrink-0 border-b border-zinc-800 bg-background/90 backdrop-blur"
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4">
         <Link href="/" className="text-base font-semibold tracking-wide">

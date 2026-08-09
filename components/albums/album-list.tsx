@@ -16,8 +16,8 @@ import {
 } from "@/lib/cover-transition";
 import type { AlbumDetail } from "@/lib/music";
 
-// 每页固定两行 × 4 列。
-const PAGE_SIZE = 8;
+// 每页固定两行 × 5 列。
+const PAGE_SIZE = 10;
 
 export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
   const router = useRouter();
@@ -122,18 +122,17 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
         />
       </div>
 
-      <div className="mt-6 flex items-center gap-4">
-        <button
-          type="button"
-          onClick={() => setPage(safePage - 1)}
-          disabled={safePage === 0}
-          aria-label="上一页"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
+      <button
+        type="button"
+        onClick={() => setPage(safePage - 1)}
+        disabled={safePage === 0}
+        aria-label="上一页"
+        className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        <ChevronLeftIcon className="h-5 w-5" />
+      </button>
 
-        <div className="grid min-w-0 flex-1 grid-cols-4 content-start grid-rows-2 gap-5">
+      <div className="mx-auto mt-6 grid max-w-6xl grid-cols-5 content-start grid-rows-2 gap-5">
           {currentAlbums.length === 0 ? (
             <p className="col-span-full text-sm text-zinc-400">
               未找到相关专辑
@@ -191,37 +190,34 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
               </button>
             );
           })}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setPage(safePage + 1)}
-          disabled={safePage >= pageCount - 1}
-          aria-label="下一页"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
       </div>
 
-      {pageCount > 1 ? (
-        <div className="mt-4 flex items-center justify-center gap-2">
-          {Array.from({ length: pageCount }, (_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => setPage(index)}
-              className={`flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors ${
-                index === safePage
-                  ? "bg-zinc-700 text-foreground"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-foreground"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <button
+        type="button"
+        onClick={() => setPage(safePage + 1)}
+        disabled={safePage >= pageCount - 1}
+        aria-label="下一页"
+        className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        <ChevronRightIcon className="h-5 w-5" />
+      </button>
+
+      <div className="mt-4 flex items-center justify-center gap-2">
+        {Array.from({ length: pageCount }, (_, index) => (
+          <button
+            key={index}
+            type="button"
+            onClick={() => setPage(index)}
+            className={`flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors ${
+              index === safePage
+                ? "bg-zinc-700 text-foreground"
+                : "text-zinc-400 hover:bg-zinc-800 hover:text-foreground"
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </>
   );
 }

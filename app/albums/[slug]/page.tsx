@@ -42,5 +42,17 @@ export default async function AlbumDetailPage({
     notFound();
   }
 
-  return <AlbumDetailView album={album} />;
+  const albums = await getAlbums();
+  const index = albums.findIndex((item) => item.slug === slug);
+  const previousAlbum = index > 0 ? albums[index - 1] : null;
+  const nextAlbum =
+    index >= 0 && index < albums.length - 1 ? albums[index + 1] : null;
+
+  return (
+    <AlbumDetailView
+      album={album}
+      previousAlbum={previousAlbum}
+      nextAlbum={nextAlbum}
+    />
+  );
 }

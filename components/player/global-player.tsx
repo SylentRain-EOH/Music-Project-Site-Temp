@@ -31,7 +31,7 @@ export default function GlobalPlayer() {
   // 点击播放列表外部时关闭下拉列表。
   useEffect(() => {
     if (!playlistOpen) return;
-    function handlePointerDown(event: PointerEvent) {
+    function handleClick(event: MouseEvent) {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -39,8 +39,8 @@ export default function GlobalPlayer() {
         setPlaylistOpen(false);
       }
     }
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, [playlistOpen]);
 
   function playFromQueue(track: Track) {
@@ -57,7 +57,11 @@ export default function GlobalPlayer() {
             <Spectrum active={isPlaying} />
           </div>
 
-          <div ref={dropdownRef} className="relative shrink-0">
+          <div
+            ref={dropdownRef}
+            className="relative shrink-0"
+            onClick={(event) => event.stopPropagation()}
+          >
             <button
               type="button"
               onClick={() => setPlaylistOpen((value) => !value)}
