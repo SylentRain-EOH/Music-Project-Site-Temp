@@ -140,7 +140,8 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
         </button>
       </div>
 
-      <div className="mt-6 grid min-h-0 flex-1 items-center gap-x-12 gap-y-8 md:grid-cols-[minmax(0,320px)_1fr]">
+      <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
+        <div className="grid w-[80%] max-w-5xl items-center gap-x-16 gap-y-8 md:grid-cols-[minmax(0,320px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
@@ -206,7 +207,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </span>
         </div>
 
-        <div className="flex min-w-0 items-center justify-center gap-2">
+        <div className="flex min-w-0 items-center justify-start gap-2">
           <button
             type="button"
             onClick={cyclePlayMode}
@@ -299,6 +300,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               ) : null}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

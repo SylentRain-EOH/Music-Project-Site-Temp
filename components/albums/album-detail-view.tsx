@@ -118,10 +118,11 @@ export default function AlbumDetailView({
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
 
-      <div className="grid min-h-0 flex-1 items-stretch gap-20 md:grid-cols-[minmax(0,340px)_1fr]">
+      <div className="flex min-h-0 flex-1 items-center justify-center">
+        <div className="grid h-[60%] w-[80%] max-w-5xl items-stretch gap-16 md:grid-cols-[minmax(0,340px)_1fr]">
         <div
           ref={coverRef}
-          className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
+          className="relative aspect-square self-start overflow-hidden rounded-lg bg-zinc-800"
         >
           {album.cover_url ? (
             <Image
@@ -175,6 +176,7 @@ export default function AlbumDetailView({
               }}
             />
           </div>
+        </div>
         </div>
       </div>
 
