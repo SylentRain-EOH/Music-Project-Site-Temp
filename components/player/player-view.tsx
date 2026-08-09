@@ -250,7 +250,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             </button>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             <VolumeControl vertical />
             <div className="relative">
               <button
