@@ -118,7 +118,7 @@ export default function AlbumDetailView({
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
 
-      <div className="grid min-h-0 flex-1 items-center gap-20 md:grid-cols-[minmax(0,340px)_1fr]">
+      <div className="grid min-h-0 flex-1 items-stretch gap-20 md:grid-cols-[minmax(0,340px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
@@ -140,35 +140,22 @@ export default function AlbumDetailView({
         </div>
 
         <div
-          className={`min-h-0 transition-opacity duration-300 ${
+          className={`flex min-h-0 flex-col transition-opacity duration-300 ${
             infoHidden ? "opacity-0" : "opacity-100"
           }`}
         >
           <h1 className="text-3xl font-bold tracking-tight">{album.title}</h1>
-          {album.release_date ? (
-            <p className="mt-2 text-sm text-zinc-400">
-              发行日期：{album.release_date}
-            </p>
-          ) : null}
-          <div className="mt-6">
-            <h2 className="text-sm font-medium text-zinc-400">专辑简介</h2>
-            <p className="mt-2 max-h-40 overflow-y-auto text-sm leading-7 text-zinc-300">
-              {album.description || "暂无简介"}
-            </p>
-          </div>
           {album.credits.length > 0 ? (
-            <div className="mt-5">
-              <h2 className="text-sm font-medium text-zinc-400">制作人员</h2>
-              <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm">
-                {album.credits.map((credit, index) => (
-                  <li key={`${credit.artist.id}-${credit.role}-${index}`}>
-                    {credit.artist.name}（{credit.role}）
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <p className="mt-3 truncate text-sm text-zinc-300">
+              {album.credits
+                .map((credit) => credit.artist.name)
+                .join(" / ")}
+            </p>
           ) : null}
-          <div className="-m-2 mt-8 p-2">
+          <div className="mt-5 min-h-0 flex-1 overflow-y-auto whitespace-pre-line text-sm leading-7 text-zinc-300">
+            {album.description || ""}
+          </div>
+          <div className="pt-6">
             <AlbumPlayButton
               tracks={album.tracks}
               onBeforeNavigate={() => {

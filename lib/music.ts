@@ -5,7 +5,6 @@ export type Artist = {
 };
 
 export type Credit = {
-  role: string;
   artist: Artist;
 };
 

@@ -180,7 +180,7 @@ curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/co
 | `albums` | 专辑 | `slug`（URL 标识）、`title`、`cover_path`、`release_date`、`published` |
 | `tracks` | 曲目 | `album_id`、`title`、`track_number`、`duration_seconds`、`audio_path`、`lyrics` |
 | `artists` | 制作人/音乐人 | `name` |
-| `credits` | 专辑/曲目与制作人关联 | `album_id`/`track_id`、`artist_id`、`role`（作曲/编曲/制作等） |
+| `credits` | 专辑/曲目与制作人关联 | `album_id`/`track_id`、`artist_id` |
 
 `published` 设为 `false` 的专辑不会出现在前端。
 

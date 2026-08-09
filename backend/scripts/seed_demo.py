@@ -91,9 +91,9 @@ async def seed_demo() -> None:
 
         session.add_all(
             [
-                Credit(album_id=album.id, artist_id=artist.id, role="制作"),
-                Credit(track_id=first_track.id, artist_id=artist.id, role="作曲"),
-                Credit(track_id=second_track.id, artist_id=artist.id, role="编曲"),
+                Credit(album_id=album.id, artist_id=artist.id),
+                Credit(track_id=first_track.id, artist_id=artist.id),
+                Credit(track_id=second_track.id, artist_id=artist.id),
             ]
         )
         await session.commit()

@@ -2,11 +2,7 @@
 
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
-from sqladmin.filters import (
-    AllUniqueStringValuesFilter,
-    BooleanFilter,
-    ForeignKeyFilter,
-)
+from sqladmin.filters import BooleanFilter, ForeignKeyFilter
 from starlette.requests import Request
 
 from app.config import settings
@@ -123,24 +119,18 @@ class CreditAdmin(ModelView, model=Credit):
         Credit.album_id,
         Credit.track_id,
         Credit.artist_id,
-        Credit.role,
     ]
-    column_filters = [
-        ForeignKeyFilter(Credit.artist_id, Artist.name),
-        AllUniqueStringValuesFilter(Credit.role),
-    ]
+    column_filters = [ForeignKeyFilter(Credit.artist_id, Artist.name)]
     column_labels = {
         Credit.id: "ID",
         Credit.album_id: "专辑 ID",
         Credit.track_id: "曲目 ID",
         Credit.artist_id: "制作人 ID",
-        Credit.role: "角色",
     }
     form_columns = [
         Credit.album,
         Credit.track,
         Credit.artist,
-        Credit.role,
     ]
     form_ajax_refs = {
         "album": {"fields": ["title"], "order_by": "title"},

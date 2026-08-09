@@ -18,7 +18,7 @@ def _cover_url(album: Album) -> str | None:
 
 def _credit_out(credit: Credit) -> CreditOut:
     """把 Credit 模型转换为 API 响应结构。"""
-    return CreditOut(role=credit.role, artist=ArtistOut.model_validate(credit.artist))
+    return CreditOut(artist=ArtistOut.model_validate(credit.artist))
 
 
 def _album_list_item(album: Album) -> AlbumListItem:

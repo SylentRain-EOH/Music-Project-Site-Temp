@@ -15,7 +15,6 @@ class ArtistOut(BaseModel):
 class CreditOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    role: str
     artist: ArtistOut
 
 

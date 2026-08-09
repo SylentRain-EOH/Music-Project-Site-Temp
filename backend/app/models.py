@@ -103,7 +103,7 @@ class Artist(Base):
 
 
 class Credit(Base):
-    """专辑或单曲与制作人的关联，role 表示作曲/编曲/制作等身份。"""
+    """专辑或单曲与制作人的关联。"""
 
     __tablename__ = "credits"
 
@@ -117,7 +117,8 @@ class Credit(Base):
     artist_id: Mapped[int] = mapped_column(
         ForeignKey("artists.id", ondelete="RESTRICT"), index=True
     )
-    role: Mapped[str] = mapped_column(String(100))
+    # 保留字段用于兼容旧数据；当前前端与后台不再区分制作角色。
+    role: Mapped[str] = mapped_column(String(100), default="")
 
     album: Mapped[Album | None] = relationship(back_populates="credits")
     track: Mapped[Track | None] = relationship(back_populates="credits")

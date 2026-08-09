@@ -140,7 +140,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
         </button>
       </div>
 
-      <div className="mt-6 grid min-h-0 flex-1 items-center gap-x-20 gap-y-8 md:grid-cols-[minmax(0,360px)_1fr]">
+      <div className="mt-6 grid min-h-0 flex-1 items-center gap-x-12 gap-y-8 md:grid-cols-[minmax(0,320px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
@@ -150,7 +150,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               src={track.cover_url}
               alt={track.album_title}
               fill
-              sizes="(max-width: 768px) 100vw, 360px"
+              sizes="(max-width: 768px) 100vw, 320px"
               className="object-cover"
               priority
             />
@@ -161,7 +161,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           )}
         </div>
 
-        <div className="flex min-h-0 flex-col justify-center">
+        <div className="flex min-h-0 min-w-0 flex-col justify-center">
           <div key={track.id} className="track-switch">
             <h1 className="truncate text-3xl font-bold tracking-tight">
               {track.title}
@@ -172,9 +172,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             {track.credits.length > 0 ? (
               <p className="mt-3 truncate text-sm text-zinc-300">
                 {track.credits
-                  .map(
-                    (credit) => `${credit.artist.name}（${credit.role}）`
-                  )
+                  .map((credit) => credit.artist.name)
                   .join(" / ")}
               </p>
             ) : null}
@@ -208,21 +206,21 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex min-w-0 items-center justify-center gap-2">
           <button
             type="button"
             onClick={cyclePlayMode}
-            className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+            className="flex h-9 w-9 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
             aria-label={`播放模式：${playModeLabels[playMode]}`}
           >
             <PlayModeIcon mode={playMode} className="h-4 w-4" />
           </button>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={playPrevious}
-              className="flex h-11 w-11 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+              className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
               aria-label="上一首"
             >
               <PrevIcon className="h-5 w-5" />
@@ -231,7 +229,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             <button
               type="button"
               onClick={togglePlay}
-              className="flex h-16 w-16 items-center justify-center rounded-full border border-zinc-600 text-zinc-100 transition-colors hover:border-zinc-400"
+              className="flex h-14 w-14 items-center justify-center rounded-full border border-zinc-600 text-zinc-100 transition-colors hover:border-zinc-400"
               aria-label={isPlaying ? "暂停" : "播放"}
             >
               {isPlaying ? (
@@ -244,7 +242,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             <button
               type="button"
               onClick={playNext}
-              className="flex h-11 w-11 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+              className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
               aria-label="下一首"
             >
               <NextIcon className="h-5 w-5" />
@@ -257,7 +255,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               <button
                 type="button"
                 onClick={() => setPlaylistOpen((open) => !open)}
-                className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+                className="flex h-9 w-9 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
                 aria-label="播放列表"
                 aria-expanded={playlistOpen}
               >

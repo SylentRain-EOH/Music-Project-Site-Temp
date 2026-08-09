@@ -53,7 +53,7 @@ async def get_track(track_id: int, db: AsyncSession = Depends(get_db)) -> TrackD
         audio_url=f"/api/v1/tracks/{track.id}/stream",
         credits=[
             CreditOut(
-                role=credit.role, artist=ArtistOut.model_validate(credit.artist)
+                artist=ArtistOut.model_validate(credit.artist)
             )
             for credit in track.credits
         ],
