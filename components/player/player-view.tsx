@@ -141,7 +141,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
       </div>
 
       <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-        <div className="grid w-[80%] max-w-5xl items-center gap-x-24 gap-y-10 md:grid-cols-[minmax(0,360px)_1fr]">
+        <div className="grid w-[80%] max-w-5xl items-center gap-x-32 gap-y-10 md:grid-cols-[minmax(0,360px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square self-start overflow-hidden rounded-lg bg-zinc-800"
@@ -230,7 +230,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
             <button
               type="button"
               onClick={togglePlay}
-              className="flex h-14 w-14 items-center justify-center rounded-full border border-zinc-600 text-zinc-100 transition-colors hover:border-zinc-400"
+              className="flex h-14 w-14 items-center justify-center rounded-full text-zinc-100 transition-colors hover:bg-zinc-800"
               aria-label={isPlaying ? "暂停" : "播放"}
             >
               {isPlaying ? (
