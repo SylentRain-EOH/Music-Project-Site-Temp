@@ -17,7 +17,8 @@ const mediaBaseUrl = (process.env.NEXT_PUBLIC_MEDIA_BASE_URL ?? "").replace(
 
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${path}`, {
-    cache: "force-cache",
+    // 开发模式实时读取数据库；生产构建时缓存，确保静态导出数据一致。
+    cache: process.env.NODE_ENV === "development" ? "no-store" : "force-cache",
   });
   if (!response.ok) {
     throw new Error(`API 请求失败（${response.status}）：${path}`);

@@ -51,6 +51,10 @@ class Album(Base):
         back_populates="album", cascade="all, delete-orphan"
     )
 
+    def __repr__(self) -> str:
+        """管理后台下拉框的显示文本。"""
+        return self.title
+
 
 class Track(Base):
     """曲目：audio_path 指向音频文件，lyrics 保存纯文本歌词。"""
@@ -78,6 +82,10 @@ class Track(Base):
         back_populates="track", cascade="all, delete-orphan"
     )
 
+    def __repr__(self) -> str:
+        """管理后台下拉框的显示文本。"""
+        return f"{self.track_number}. {self.title}"
+
 
 class Artist(Base):
     """制作人/音乐人。"""
@@ -88,6 +96,10 @@ class Artist(Base):
     name: Mapped[str] = mapped_column(String(200), unique=True, index=True)
 
     credits: Mapped[list["Credit"]] = relationship(back_populates="artist")
+
+    def __repr__(self) -> str:
+        """管理后台下拉框的显示文本。"""
+        return self.name
 
 
 class Credit(Base):
