@@ -32,26 +32,6 @@ uvicorn app.main:app --reload --port 8000
 
 健康检查：`GET http://localhost:8000/api/v1/health`
 
-## 快速验收（无需 PostgreSQL）
-
-如果本机没有 PostgreSQL，可以直接用 SQLite 跑通整个流程：
-
-```bash
-export DATABASE_URL="sqlite+aiosqlite:///./soulsearching_dev.db"
-python scripts/init_db.py
-python scripts/seed_demo.py
-uvicorn app.main:app --reload --port 8000
-```
-
-另开一个终端启动前端：
-
-```bash
-cd ..
-npm run dev
-```
-
-然后打开 http://localhost:3000 即可验收。
-
 ## 主要接口
 
 - `GET /api/v1/albums`：专辑列表

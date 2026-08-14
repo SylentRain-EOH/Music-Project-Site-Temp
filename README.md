@@ -186,6 +186,7 @@ curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/co
 
 ### 3. 需要修改的占位内容
 
+- 站点名称：编辑 `lib/site.ts` 中的 `name`
 - 联系邮箱：编辑 `lib/site.ts` 中的 `email`
 - 版权文案：编辑 `components/copyright-button.tsx`
 - 站点简介：编辑 `lib/site.ts` 中的 `description`
@@ -198,12 +199,9 @@ curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/co
 
 ## 后续可扩展点
 
-- 管理后台：用 SQLAdmin 或自定义页面上传专辑/曲目/封面，替代手工写库
 - 艺术家页：按 `artists` 聚合作品
-- 搜索：PostgreSQL 全文检索或简单标题匹配
 - 播放列表历史/最近播放
 - 真实歌词滚动高亮（根据 `currentTime` 同步当前行）
-- 音频转码与多格式支持（MP3/AAC/FLAC）
 - 流量增长后把 `backend/media` 迁移到 OSS + CDN，数据库路径不变
 
 ## 已知注意事项
