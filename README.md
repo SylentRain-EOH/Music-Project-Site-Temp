@@ -62,6 +62,34 @@ soul-searching-site/
 └── package.json             # 前端依赖与脚本（build 已固定 webpack）
 ```
 
+## 环境准备
+
+需要 Node.js ≥ 20.9（Next.js 16 要求）、Python ≥ 3.10，并已安装 PostgreSQL。
+
+### 1. 克隆仓库
+
+```bash
+git clone git@github.com:SylentRain-EOH/Music-Project-Site-Temp.git
+cd Music-Project-Site-Temp
+```
+
+### 2. 安装前端依赖
+
+```bash
+npm install
+```
+
+### 3. 创建 Python 虚拟环境并安装后端依赖
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate      # Windows：.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+完成后按下一节「本地运行」启动前后端。
+
 ## 本地运行
 
 ### 后端（终端 1）
