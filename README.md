@@ -209,4 +209,4 @@ curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/co
 - 开发模式下前端 3000、后端 8000 跨域；真实频谱依赖媒体响应带 CORS 头（FastAPI 已配置）
 - `npm run build` 使用 webpack 模式（Turbopack 在当前机器构建会报环境错误），脚本已固定
 - 静态导出不支持 `next start`，部署请使用 Nginx 等静态服务器
-- 管理后台默认账号仅供本地开发，部署前务必设置 `ADMIN_USERNAME`、`ADMIN_PASSWORD` 与 `SECRET_KEY`
+- 管理后台默认账号仅供本地开发，部署前务必设置 `APP_ENV=production` 以及 `ADMIN_USERNAME`、`ADMIN_PASSWORD`、`SECRET_KEY`（仍使用默认值时后端会拒绝启动）

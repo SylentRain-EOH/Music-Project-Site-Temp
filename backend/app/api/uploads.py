@@ -1,5 +1,6 @@
 """上传接口：受 Basic Auth 保护，保存音频/封面并返回相对路径。"""
 
+import hmac
 import uuid
 from pathlib import Path
 
@@ -17,9 +18,10 @@ COVER_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 def require_admin(credentials: HTTPBasicCredentials = Depends(security)) -> None:
     """上传接口与后台共用同一组管理员账号。"""
+    # 用恒定时间比较，避免凭据校验的计时侧信道。
     if (
-        credentials.username != settings.admin_username
-        or credentials.password != settings.admin_password
+        not hmac.compare_digest(credentials.username, settings.admin_username)
+        or not hmac.compare_digest(credentials.password, settings.admin_password)
     ):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
 

@@ -7,7 +7,10 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.admin import setup_admin
 from app.api import albums, tracks, uploads
-from app.config import settings
+from app.config import settings, validate_security_settings
+
+# 默认密钥/账号的兜底校验：生产环境拒绝启动，开发环境输出告警。
+validate_security_settings(settings)
 
 settings.media_root.mkdir(parents=True, exist_ok=True)
 

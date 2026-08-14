@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 
 from app.config import settings
 from app.database import get_db
-from app.models import Credit, Track
+from app.models import Album, Credit, Track
 from app.schemas import ArtistOut, CreditOut, TrackDetail
 
 router = APIRouter(prefix="/tracks", tags=["tracks"])
@@ -30,11 +30,12 @@ async def get_track(track_id: int, db: AsyncSession = Depends(get_db)) -> TrackD
     """返回单曲详情（含歌词与专辑信息）。"""
     result = await db.execute(
         select(Track)
+        .join(Track.album)
         .options(
             selectinload(Track.album),
             selectinload(Track.credits).selectinload(Credit.artist),
         )
-        .where(Track.id == track_id)
+        .where(Track.id == track_id, Album.published.is_(True))
     )
     track = result.scalar_one_or_none()
     if track is None:
@@ -66,7 +67,12 @@ async def stream_track(
     track_id: int, db: AsyncSession = Depends(get_db)
 ) -> FileResponse:
     """返回音频文件流；FileResponse 原生支持 Range，浏览器可拖动进度条。"""
-    track = await db.get(Track, track_id)
+    result = await db.execute(
+        select(Track)
+        .join(Track.album)
+        .where(Track.id == track_id, Album.published.is_(True))
+    )
+    track = result.scalar_one_or_none()
     if track is None:
         raise HTTPException(status_code=404, detail="曲目不存在")
 

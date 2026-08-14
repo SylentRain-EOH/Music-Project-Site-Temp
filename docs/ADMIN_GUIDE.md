@@ -169,13 +169,16 @@ npm run build
 
 ## 7. 生产环境注意事项
 
-1. 修改管理员账号：在 `backend/.env` 中设置
+1. 修改管理员账号与密钥：在 `backend/.env` 中设置
 
 ```text
+APP_ENV=production
 ADMIN_USERNAME=你的用户名
 ADMIN_PASSWORD=强密码
 SECRET_KEY=随机长字符串
 ```
+
+`APP_ENV=production` 下若仍使用默认密钥或默认账号，后端会拒绝启动。
 
 2. 使用 PostgreSQL：把 `DATABASE_URL` 改成 PostgreSQL 连接串，并先执行建表。
    连接串格式为 `postgresql+psycopg://用户名:密码@主机:端口/数据库名`，

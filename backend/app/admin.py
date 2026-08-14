@@ -1,5 +1,7 @@
 """SQLAdmin 管理后台：受登录保护，可管理专辑、曲目、制作人与署名。"""
 
+import hmac
+
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
 from sqladmin.filters import BooleanFilter, ForeignKeyFilter
@@ -17,9 +19,10 @@ class AdminAuth(AuthenticationBackend):
         form = await request.form()
         username = form.get("username", "")
         password = form.get("password", "")
+        # 恒定时间比较，避免凭据校验的计时侧信道。
         if (
-            username == settings.admin_username
-            and password == settings.admin_password
+            hmac.compare_digest(username, settings.admin_username)
+            and hmac.compare_digest(password, settings.admin_password)
         ):
             request.session.update({"admin": username})
             return True
