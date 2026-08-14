@@ -89,6 +89,8 @@ npm run dev
 
 启动后端后访问 http://localhost:8000/admin ，默认账号 `admin` / `admin`（生产环境务必通过环境变量修改）。后台可以增删改查专辑、曲目、制作人和署名。
 
+部署到服务器后同样在本地浏览器访问 `https://你的域名/admin` 即可管理，不需要在服务器上安装图形界面；注意 Nginx 需代理 `/admin` 路径（见下方部署示例）。
+
 完整操作流程见 [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)：从添加制作人、上传音频封面、创建专辑曲目署名，到发布前端的每一步都有说明。
 
 ## 数据库
@@ -138,6 +140,13 @@ server {
     proxy_pass http://127.0.0.1:8000;
   }
   location /media/ {
+    proxy_pass http://127.0.0.1:8000;
+  }
+  # 管理后台（含其静态资源 /admin/statics/），访问 https://your-domain.com/admin。
+  # 建议按需开启 IP 白名单：放开下面两行 allow/deny，并把 IP 换成你自己的出口地址。
+  location /admin {
+    # allow 203.0.113.7;
+    # deny all;
     proxy_pass http://127.0.0.1:8000;
   }
   location / {
