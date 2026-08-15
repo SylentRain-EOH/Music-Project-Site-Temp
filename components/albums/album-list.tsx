@@ -1,7 +1,7 @@
 // 专辑列表：负责卡片网格、封面 FLIP 过渡、搜索与分页。
 "use client";
 
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -27,6 +27,9 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
   const [returningSlug, setReturningSlug] = useState<string | null>(null);
   const [settledSlug, setSettledSlug] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
+  // 返回过渡期间抑制卡片的 hover 响应（含封面 group-hover 缩放），
+  // 直到用户真正移动鼠标才恢复，避免指针停在卡片上时出现光效闪烁。
+  const [hoverArmed, setHoverArmed] = useState(true);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // 按专辑标题或制作人姓名过滤。
@@ -71,7 +74,10 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
       requestAnimationFrame(() => setPage(targetPage));
     }
     const raf = requestAnimationFrame(() => {
-      if (transition) setReturningSlug(transition.slug);
+      if (transition) {
+        setReturningSlug(transition.slug);
+        setHoverArmed(false);
+      }
       setVisible(false);
       requestAnimationFrame(() => setVisible(true));
     });
@@ -80,6 +86,14 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
       if (timer !== undefined) window.clearTimeout(timer);
     };
   }, [albums]);
+
+  // 抑制期间监听一次 pointermove：用户移动鼠标即恢复 hover 效果。
+  useEffect(() => {
+    if (hoverArmed) return;
+    const armHover = () => setHoverArmed(true);
+    window.addEventListener("pointermove", armHover, { once: true });
+    return () => window.removeEventListener("pointermove", armHover);
+  }, [hoverArmed]);
 
   function handleSelect(slug: string) {
     // 记录卡片封面位置，淡出其余内容后跳转到详情页。
@@ -141,8 +155,12 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
           {currentAlbums.map((album, index) => {
             const isLeaveTarget = leavingSlug === album.slug;
             const isReturnTarget = returningSlug === album.slug;
-            let className =
-              "group rounded-lg transition-all duration-300 ";
+            const hoverClass = hoverArmed
+              ? "hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700"
+              : "";
+            let className = `${
+              hoverArmed ? "group " : ""
+            }rounded-lg transition-all duration-300 `;
             let animationDelay: string | undefined;
 
             if (isLeaveTarget || isReturnTarget) {
@@ -150,11 +168,9 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
             } else if (leavingSlug !== null || !visible) {
               className += "opacity-0 ring-1 ring-transparent";
             } else if (settledSlug === album.slug) {
-              className +=
-                "opacity-100 ring-1 ring-transparent hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700";
+              className += `opacity-100 ring-1 ring-transparent ${hoverClass}`;
             } else {
-              className +=
-                "card-fade-in opacity-100 ring-1 ring-transparent hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700";
+              className += `card-fade-in opacity-100 ring-1 ring-transparent ${hoverClass}`;
               animationDelay = `${index * 40}ms`;
             }
 
