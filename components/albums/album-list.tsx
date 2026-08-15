@@ -18,6 +18,15 @@ import type { AlbumDetail } from "@/lib/music";
 
 // 每页固定两行 × 5 列。
 const PAGE_SIZE = 10;
+const CARD_STAGGER_MS = 40;
+const CARD_FADE_IN_MS = 500;
+const RETURN_SETTLE_MS = 520;
+// 返回列表后，要等 FLIP 落位和所有卡片的 card-fade-in（含最大 stagger）都结束，
+// 才允许指针移动重新启用 hover；否则移动发生在过渡期间时，hover 会叠加在动画上闪烁。
+const HOVER_SUPPRESSION_MS = Math.max(
+  RETURN_SETTLE_MS,
+  CARD_FADE_IN_MS + PAGE_SIZE * CARD_STAGGER_MS
+);
 
 export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
   const router = useRouter();
@@ -28,8 +37,11 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
   const [settledSlug, setSettledSlug] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   // 返回过渡期间抑制卡片的 hover 响应（含封面 group-hover 缩放），
-  // 直到用户真正移动鼠标才恢复，避免指针停在卡片上时出现光效闪烁。
+  // 等过渡动画全部结束、用户再次移动鼠标时才恢复，避免指针停在卡片上时出现光效闪烁。
   const [hoverArmed, setHoverArmed] = useState(true);
+  // 返回过渡开始后，在该时间点之前收到的 pointermove 都不重新启用 hover，
+  // 只把监听顺延到下一次移动。这样“过渡期间移动过鼠标”也不会提前点亮卡片。
+  const hoverArmAfter = useRef(0);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // 按专辑标题或制作人姓名过滤。
@@ -60,8 +72,8 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
       const cover = cardRefs.current[transition.slug];
       if (cover) {
         flipFromRect(cover, transition.rect);
-        cover.closest("button")?.classList.add("ring-0", "shadow-none");
       }
+      hoverArmAfter.current = performance.now() + HOVER_SUPPRESSION_MS;
       const targetIndex = albums.findIndex(
         (album) => album.slug === transition.slug
       );
@@ -70,7 +82,7 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
       timer = window.setTimeout(() => {
         setReturningSlug(null);
         setSettledSlug(transition.slug);
-      }, 520);
+      }, RETURN_SETTLE_MS);
       requestAnimationFrame(() => setPage(targetPage));
     }
     const raf = requestAnimationFrame(() => {
@@ -87,10 +99,17 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
     };
   }, [albums]);
 
-  // 抑制期间监听一次 pointermove：用户移动鼠标即恢复 hover 效果。
+  // 抑制期间监听 pointermove：只在过渡真正结束后的下一次鼠标移动时恢复 hover。
   useEffect(() => {
     if (hoverArmed) return;
-    const armHover = () => setHoverArmed(true);
+    const armHover = () => {
+      if (performance.now() < hoverArmAfter.current) {
+        // 过渡还没结束，继续保持抑制并等待下一次移动。
+        window.addEventListener("pointermove", armHover, { once: true });
+        return;
+      }
+      setHoverArmed(true);
+    };
     window.addEventListener("pointermove", armHover, { once: true });
     return () => window.removeEventListener("pointermove", armHover);
   }, [hoverArmed]);
@@ -164,14 +183,16 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
             let animationDelay: string | undefined;
 
             if (isLeaveTarget || isReturnTarget) {
-              className += "shadow-none ring-0 opacity-100";
+              // 与其他状态保持相同的透明 1px ring。不要在 ring-1/ring-0 之间
+              // 切换：transition-all 会插值 ring 宽度与颜色，短暂画出高亮边框。
+              className += "opacity-100 ring-1 ring-transparent";
             } else if (leavingSlug !== null || !visible) {
               className += "opacity-0 ring-1 ring-transparent";
             } else if (settledSlug === album.slug) {
               className += `opacity-100 ring-1 ring-transparent ${hoverClass}`;
             } else {
               className += `card-fade-in opacity-100 ring-1 ring-transparent ${hoverClass}`;
-              animationDelay = `${index * 40}ms`;
+              animationDelay = `${index * CARD_STAGGER_MS}ms`;
             }
 
             return (
