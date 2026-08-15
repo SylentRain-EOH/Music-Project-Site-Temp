@@ -1,6 +1,7 @@
 // 根布局：锁定视口高度，全局挂载播放器状态，页面内容统一放入 <main>。
 import type { Metadata } from "next";
 
+import SiteBackground from "@/components/site-background";
 import SiteHeader from "@/components/site-header";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { siteConfig } from "@/lib/site";
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="h-full antialiased">
       <body className="flex h-screen flex-col overflow-hidden">
+        <SiteBackground />
         <PlayerProvider>
           <SiteHeader />
           <main className="min-h-0 flex-1 overflow-hidden">{children}</main>
