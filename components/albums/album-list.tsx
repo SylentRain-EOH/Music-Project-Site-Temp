@@ -131,13 +131,16 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
     window.setTimeout(() => router.push(`/albums/${slug}`), 220);
   }
 
-  const headingClassName = `text-2xl font-bold tracking-tight transition-opacity duration-300 ${
+  // 标题与搜索栏共用同一组渐入/渐出状态，保证动画完全同步。
+  const headerItemClassName = `transition-opacity duration-300 ${
     leavingSlug !== null
       ? "opacity-0"
       : visible
         ? "heading-rise opacity-100"
         : "opacity-0"
   }`;
+  const headingClassName = `text-2xl font-bold tracking-tight ${headerItemClassName}`;
+  const searchClassName = `w-56 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none ${headerItemClassName}`;
 
   return (
     <>
@@ -151,7 +154,7 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
             setPage(0);
           }}
           placeholder="搜索专辑或制作人"
-          className="w-56 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none"
+          className={searchClassName}
         />
       </div>
 
