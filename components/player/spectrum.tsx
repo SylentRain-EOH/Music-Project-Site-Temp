@@ -32,7 +32,8 @@ function getSource(
 function drawSpectrum(
   canvas: HTMLCanvasElement,
   data: Uint8Array<ArrayBuffer>,
-  playing: boolean
+  playing: boolean,
+  color: string
 ) {
   // 将频域数据映射为 13 根条形图；未播放时绘制低平条。
   const dpr = window.devicePixelRatio || 1;
@@ -42,7 +43,7 @@ function drawSpectrum(
   if (!context) return;
   context.setTransform(dpr, 0, 0, dpr, 0, 0);
   context.clearRect(0, 0, WIDTH, HEIGHT);
-  context.fillStyle = "#a1a1aa";
+  context.fillStyle = color;
 
   const binCount = data.length;
   for (let index = 0; index < BAR_COUNT; index += 1) {
@@ -73,6 +74,8 @@ export default function Spectrum({ active }: { active: boolean }) {
     const audio = audioRef.current;
     const canvas = canvasRef.current;
     if (!audio || !canvas) return;
+    // 从 CSS 主题变量读取频谱颜色，避免在 canvas 绘制逻辑中硬编码色值。
+    const spectrumColor = getComputedStyle(canvas).color;
 
     if (active && !contextRef.current) {
       try {
@@ -99,7 +102,7 @@ export default function Spectrum({ active }: { active: boolean }) {
       const analyser = analyserRef.current;
       if (!analyser || !dataRef.current || !canvasRef.current) return;
       analyser.getByteFrequencyData(dataRef.current);
-      drawSpectrum(canvasRef.current, dataRef.current, true);
+      drawSpectrum(canvasRef.current, dataRef.current, true, spectrumColor);
       rafRef.current = requestAnimationFrame(draw);
     }
 
@@ -111,7 +114,7 @@ export default function Spectrum({ active }: { active: boolean }) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
-      drawSpectrum(canvas, EMPTY_DATA, false);
+      drawSpectrum(canvas, EMPTY_DATA, false, spectrumColor);
     }
 
     return () => {
@@ -125,7 +128,7 @@ export default function Spectrum({ active }: { active: boolean }) {
   return (
     <canvas
       ref={canvasRef}
-      className="h-6 w-20"
+      className="h-6 w-20 text-foreground-faint"
       style={{ width: WIDTH, height: HEIGHT }}
       aria-hidden="true"
     />

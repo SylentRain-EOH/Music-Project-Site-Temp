@@ -86,12 +86,12 @@ export default function AlbumDetailView({
 
   return (
     <div
-      className={`mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4 transition-opacity duration-300 ${
+      className={`mx-auto flex h-[calc(100vh-6rem)] max-w-6xl flex-col px-6 py-4 transition-opacity duration-base ${
         pageHidden ? "opacity-0" : "opacity-100"
       }`}
     >
       <div
-        className={`shrink-0 transition-opacity duration-200 ${
+        className={`shrink-0 transition-opacity duration-quick ${
           infoHidden ? "opacity-0" : "opacity-100"
         }`}
       >
@@ -99,7 +99,7 @@ export default function AlbumDetailView({
           type="button"
           onClick={handleBack}
           aria-label="返回专辑列表"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-foreground"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground-faint transition-colors hover:bg-surface-raised hover:text-foreground"
         >
           <BackIcon className="h-5 w-5" />
         </button>
@@ -112,7 +112,7 @@ export default function AlbumDetailView({
         }
         disabled={!previousAlbum}
         aria-label="上一个专辑"
-        className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line text-foreground-soft transition-colors hover:border-line-hover hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
       >
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
@@ -133,7 +133,7 @@ export default function AlbumDetailView({
         <div className="grid w-[80%] max-w-5xl items-stretch gap-16 md:grid-cols-[minmax(0,340px)_1fr]">
         <div
           ref={coverRef}
-          className="relative aspect-square self-start overflow-hidden rounded-lg bg-zinc-800"
+          className="relative aspect-square self-start overflow-hidden rounded-lg bg-surface-raised"
         >
           {album.cover_url ? (
             <Image
@@ -145,26 +145,26 @@ export default function AlbumDetailView({
               priority
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+            <div className="flex h-full items-center justify-center text-sm text-foreground-muted">
               暂无封面
             </div>
           )}
         </div>
 
         <div
-          className={`flex min-h-0 flex-col transition-opacity duration-300 ${
+          className={`flex min-h-0 flex-col transition-opacity duration-base ${
             infoHidden ? "opacity-0" : "opacity-100"
           }`}
         >
           <h1 className="text-3xl font-bold tracking-tight">{album.title}</h1>
           {album.credits.length > 0 ? (
-            <p className="mt-3 truncate text-sm text-zinc-300">
+            <p className="mt-3 truncate text-sm text-foreground-soft">
               {album.credits
                 .map((credit) => credit.artist.name)
                 .join(" / ")}
             </p>
           ) : null}
-          <div className="mt-5 min-h-0 flex-1 overflow-y-auto whitespace-pre-line text-sm leading-7 text-zinc-300">
+          <div className="mt-5 min-h-0 flex-1 overflow-y-auto whitespace-pre-line text-sm leading-7 text-foreground-soft">
             {album.description || ""}
           </div>
           <div className="pt-6">
@@ -196,7 +196,7 @@ export default function AlbumDetailView({
         onClick={() => nextAlbum && goToAlbum(nextAlbum.slug, "left")}
         disabled={!nextAlbum}
         aria-label="下一个专辑"
-        className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line text-foreground-soft transition-colors hover:border-line-hover hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
       >
         <ChevronRightIcon className="h-5 w-5" />
       </button>

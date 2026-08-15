@@ -15,7 +15,7 @@ export default function ContactPage() {
     <PageTransition>
       <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-5xl flex-col justify-center overflow-hidden px-4">
         <h1 className="text-3xl font-bold tracking-tight">联系</h1>
-        <p className="mt-3 text-sm text-zinc-400">
+        <p className="mt-3 text-sm text-foreground-faint">
           如果你对我们的音乐感兴趣，可以通过以下方式联系。
         </p>
         <ul className="mt-8 space-y-3 text-sm">
@@ -23,12 +23,12 @@ export default function ContactPage() {
             邮箱：
             <a
               href={`mailto:${siteConfig.email}`}
-              className="text-zinc-300 underline-offset-4 hover:underline"
+              className="text-foreground-soft underline-offset-4 hover:underline"
             >
               {siteConfig.email}
             </a>
           </li>
-          <li className="text-zinc-400">社交媒体账号：待补充</li>
+          <li className="text-foreground-faint">社交媒体账号：待补充</li>
         </ul>
       </div>
       <CopyrightButton />

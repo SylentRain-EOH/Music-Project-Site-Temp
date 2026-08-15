@@ -132,7 +132,7 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
   }
 
   // 标题与搜索栏共用同一组渐入/渐出状态，保证动画完全同步。
-  const headerItemClassName = `transition-opacity duration-300 ${
+  const headerItemClassName = `transition-opacity duration-base ${
     leavingSlug !== null
       ? "opacity-0"
       : visible
@@ -140,7 +140,7 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
         : "opacity-0"
   }`;
   const headingClassName = `text-2xl font-bold tracking-tight ${headerItemClassName}`;
-  const searchClassName = `w-56 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none ${headerItemClassName}`;
+  const searchClassName = `w-56 rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-foreground placeholder:text-foreground-muted focus:border-line-hover focus:outline-none ${headerItemClassName}`;
 
   return (
     <>
@@ -163,14 +163,14 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
         onClick={() => setPage(safePage - 1)}
         disabled={safePage === 0}
         aria-label="上一页"
-        className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        className="fixed left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line text-foreground-soft transition-colors hover:border-line-hover hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
       >
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
 
       <div className="mx-auto mt-6 grid max-w-6xl grid-cols-5 content-start grid-rows-2 gap-5">
           {currentAlbums.length === 0 ? (
-            <p className="col-span-full text-sm text-zinc-400">
+            <p className="col-span-full text-sm text-foreground-faint">
               未找到相关专辑
             </p>
           ) : null}
@@ -178,11 +178,11 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
             const isLeaveTarget = leavingSlug === album.slug;
             const isReturnTarget = returningSlug === album.slug;
             const hoverClass = hoverArmed
-              ? "hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-zinc-700"
+              ? "hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/40 hover:ring-line"
               : "";
             let className = `${
               hoverArmed ? "group " : ""
-            }rounded-lg transition-all duration-300 `;
+            }rounded-lg transition-all duration-base `;
             let animationDelay: string | undefined;
 
             if (isLeaveTarget || isReturnTarget) {
@@ -211,7 +211,7 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
                   ref={(element) => {
                     cardRefs.current[album.slug] = element;
                   }}
-                  className="relative aspect-square overflow-hidden rounded-lg bg-zinc-800"
+                  className="relative aspect-square overflow-hidden rounded-lg bg-surface-raised"
                 >
                   {album.cover_url ? (
                     <Image
@@ -219,10 +219,10 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
                       alt={album.title}
                       fill
                       sizes="(max-width: 640px) 50vw, 25vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="object-cover transition-transform duration-slow group-hover:scale-110"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+                    <div className="flex h-full items-center justify-center text-sm text-foreground-muted">
                       暂无封面
                     </div>
                   )}
@@ -237,7 +237,7 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
         onClick={() => setPage(safePage + 1)}
         disabled={safePage >= pageCount - 1}
         aria-label="下一页"
-        className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        className="fixed right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line text-foreground-soft transition-colors hover:border-line-hover hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
       >
         <ChevronRightIcon className="h-5 w-5" />
       </button>
@@ -250,8 +250,8 @@ export default function AlbumList({ albums }: { albums: AlbumDetail[] }) {
             onClick={() => setPage(index)}
             className={`flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors ${
               index === safePage
-                ? "bg-zinc-700 text-foreground"
-                : "text-zinc-400 hover:bg-zinc-800 hover:text-foreground"
+                ? "bg-surface-active text-foreground"
+                : "text-foreground-faint hover:bg-surface-raised hover:text-foreground"
             }`}
           >
             {index + 1}

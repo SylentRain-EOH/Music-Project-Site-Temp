@@ -27,7 +27,7 @@ export default function AlbumPlayButton({
   }, [firstTrackId, router]);
 
   if (!firstTrack) {
-    return <p className="text-sm text-zinc-400">暂无曲目</p>;
+    return <p className="text-sm text-foreground-faint">暂无曲目</p>;
   }
 
   function handlePlay() {
@@ -48,7 +48,7 @@ export default function AlbumPlayButton({
       type="button"
       onClick={handlePlay}
       aria-label="播放专辑"
-      className="flex h-16 w-16 items-center justify-center rounded-full border border-zinc-600 text-zinc-100 transition-all hover:scale-105 hover:border-zinc-400"
+      className="flex h-16 w-16 items-center justify-center rounded-full border border-line-strong text-foreground transition-all hover:scale-105 hover:border-foreground-faint"
     >
       <PlayIcon className="h-6 w-6" />
     </button>

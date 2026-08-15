@@ -65,13 +65,13 @@ export default function CopyrightButton() {
       {open || closing ? (
         <div
           ref={sheetRef}
-          className={`fixed inset-x-0 bottom-0 z-40 border-t border-zinc-800 bg-background px-6 py-4 shadow-[0_-8px_30px_rgba(0,0,0,0.4)] ${
+          className={`fixed inset-x-0 bottom-0 z-40 border-t border-line-subtle bg-background px-6 py-4 shadow-[0_-8px_30px_rgba(0,0,0,0.4)] ${
             closing ? "sheet-down" : "sheet-up"
           }`}
         >
           <div className="mx-auto max-w-6xl">
             <h2 className="text-sm font-medium">版权信息</h2>
-            <p className="mt-2 text-xs leading-6 text-zinc-400">
+            <p className="mt-2 text-xs leading-6 text-foreground-faint">
               © {new Date().getFullYear()} {siteConfig.name}
               。本站展示的音乐作品及相关内容版权归 {siteConfig.name} 企划所有，未经授权请勿转载或用于商业用途。
             </p>
@@ -82,7 +82,7 @@ export default function CopyrightButton() {
         ref={buttonRef}
         type="button"
         onClick={toggleSheet}
-        className="fixed bottom-4 right-4 z-50 rounded-full border border-zinc-700 px-4 py-2 text-xs text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground"
+        className="fixed bottom-4 right-4 z-50 rounded-full border border-line px-4 py-2 text-xs text-foreground-soft transition-colors hover:border-line-hover hover:text-foreground"
       >
         © 版权信息
       </button>

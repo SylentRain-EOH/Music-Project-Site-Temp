@@ -49,7 +49,7 @@ export default function VolumeControl({
       <button
         type="button"
         onClick={toggleMute}
-        className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-foreground-soft transition-colors hover:bg-surface-raised hover:text-foreground"
         aria-label={isMuted ? "取消静音" : "静音"}
       >
         {isMuted ? (
@@ -60,7 +60,7 @@ export default function VolumeControl({
       </button>
 
       {open ? (
-        <div className="absolute bottom-full right-0 z-50 mb-2 rounded-lg border border-zinc-800 bg-background p-3 shadow-xl">
+        <div className="absolute bottom-full right-0 z-50 mb-2 rounded-lg border border-line-subtle bg-background p-3 shadow-xl">
           <input
             type="range"
             min={0}
@@ -70,8 +70,8 @@ export default function VolumeControl({
             onChange={(event) => setVolume(Number(event.target.value))}
             className={
               vertical
-                ? "h-28 w-1 cursor-pointer accent-zinc-400"
-                : "h-1 w-28 cursor-pointer accent-zinc-400"
+                ? "h-28 w-1 cursor-pointer accent-foreground-faint"
+                : "h-1 w-28 cursor-pointer accent-foreground-faint"
             }
             style={
               vertical ? { writingMode: "vertical-lr", direction: "rtl" } : undefined

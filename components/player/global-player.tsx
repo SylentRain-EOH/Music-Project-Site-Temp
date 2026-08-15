@@ -67,15 +67,15 @@ export default function GlobalPlayer() {
               onClick={() => setPlaylistOpen((value) => !value)}
               aria-label="播放列表"
               aria-expanded={playlistOpen}
-              className="block w-48 truncate rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-left text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-foreground"
+              className="block w-48 truncate rounded-md border border-line bg-surface px-3 py-1.5 text-left text-sm text-foreground-soft transition-colors hover:border-line-hover hover:text-foreground"
             >
               {currentTrack.title}
             </button>
 
             {playlistOpen ? (
-              <div className="absolute left-0 top-full z-50 mt-2 max-h-64 w-48 overflow-y-auto rounded-lg border border-zinc-800 bg-background p-1 shadow-xl">
+              <div className="absolute left-0 top-full z-50 mt-2 max-h-64 w-48 overflow-y-auto rounded-lg border border-line-subtle bg-background p-1 shadow-xl">
                 {queue.length === 0 ? (
-                  <p className="px-2 py-2 text-xs text-zinc-500">
+                  <p className="px-2 py-2 text-xs text-foreground-muted">
                     播放列表为空
                   </p>
                 ) : (
@@ -88,11 +88,11 @@ export default function GlobalPlayer() {
                         onClick={() => playFromQueue(item)}
                         className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs transition-colors ${
                           isCurrent
-                            ? "bg-zinc-800 font-medium text-foreground"
-                            : "text-zinc-300 hover:bg-zinc-800"
+                            ? "bg-surface-raised font-medium text-foreground"
+                            : "text-foreground-soft hover:bg-surface-raised"
                         }`}
                       >
-                        <span className="w-4 shrink-0 text-right text-zinc-500">
+                        <span className="w-4 shrink-0 text-right text-foreground-muted">
                           {item.track_number}
                         </span>
                         <span className="truncate">{item.title}</span>
@@ -108,7 +108,7 @@ export default function GlobalPlayer() {
             <button
               type="button"
               onClick={playPrevious}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+              className="flex h-8 w-8 items-center justify-center rounded-md text-foreground-soft transition-colors hover:bg-surface-raised hover:text-foreground"
               aria-label="上一首"
             >
               <PrevIcon className="h-3.5 w-3.5" />
@@ -116,7 +116,7 @@ export default function GlobalPlayer() {
             <button
               type="button"
               onClick={togglePlay}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700 text-zinc-200 transition-colors hover:border-zinc-500"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-foreground transition-colors hover:border-line-hover"
               aria-label={isPlaying ? "暂停" : "播放"}
             >
               {isPlaying ? (
@@ -128,7 +128,7 @@ export default function GlobalPlayer() {
             <button
               type="button"
               onClick={playNext}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-foreground"
+              className="flex h-8 w-8 items-center justify-center rounded-md text-foreground-soft transition-colors hover:bg-surface-raised hover:text-foreground"
               aria-label="下一首"
             >
               <NextIcon className="h-3.5 w-3.5" />
@@ -137,7 +137,7 @@ export default function GlobalPlayer() {
           </div>
         </>
       ) : (
-        <p className="text-xs text-zinc-500">未在播放</p>
+        <p className="text-xs text-foreground-muted">未在播放</p>
       )}
     </div>
   );

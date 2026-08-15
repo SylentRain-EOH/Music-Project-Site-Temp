@@ -98,12 +98,12 @@ export default function NavLinks() {
               linkRefs.current[item.href] = element;
             }}
             onClick={(event) => handleNavigate(event, item.href)}
-            className={`transition-colors duration-300 hover:text-foreground ${
+            className={`transition-colors duration-base hover:text-foreground ${
               active
                 ? `text-foreground ${
                     indicatorReady ? "" : "underline underline-offset-8"
                   }`
-                : "text-zinc-300"
+                : "text-foreground-soft"
             }`}
           >
             {item.label}
@@ -113,7 +113,7 @@ export default function NavLinks() {
 
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-[1px] left-0 h-px rounded-full bg-foreground transition-[width,transform] duration-300 ease-out"
+        className="pointer-events-none absolute -bottom-[1px] left-0 h-px rounded-full bg-foreground transition-[width,transform] duration-base ease-out"
         style={{
           width: `${indicator.width}px`,
           transform: `translateX(${indicator.left}px)`,
