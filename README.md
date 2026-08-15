@@ -119,6 +119,14 @@ npm run dev
 
 部署到服务器后同样在本地浏览器访问 `https://你的域名/admin` 即可管理，不需要在服务器上安装图形界面；注意 Nginx 需代理 `/admin` 路径（见下方部署示例）。
 
+更安全的替代方案是 SSH 隧道——后台完全不暴露公网。在本机执行：
+
+```bash
+ssh -L 8000:127.0.0.1:8000 用户名@你的服务器
+```
+
+保持该终端连接，浏览器打开 http://localhost:8000/admin 即可像本地一样管理（此时 Nginx 可不代理 `/admin`，或对 `/admin` 直接 `deny all`）。
+
 完整操作流程见 [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)：从添加制作人、上传音频封面、创建专辑曲目署名，到发布前端的每一步都有说明。
 
 ## 数据库
@@ -172,6 +180,8 @@ server {
   }
   # 管理后台（含其静态资源 /admin/statics/），访问 https://your-domain.com/admin。
   # 建议按需开启 IP 白名单：放开下面两行 allow/deny，并把 IP 换成你自己的出口地址。
+  # 注意：家宽/运营商 NAT 的出口 IP 会动态变化，出现 403 时先查
+  # /var/log/nginx/access.log 中 /admin 请求的来源地址，再更新 allow。
   location /admin {
     # allow 203.0.113.7;
     # deny all;
