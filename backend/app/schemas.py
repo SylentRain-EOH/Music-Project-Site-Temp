@@ -49,3 +49,5 @@ class AlbumDetail(AlbumListItem):
     description: str | None
     credits: list[CreditOut] = []
     tracks: list[TrackListItem] = []
+    downloadable: bool = False
+    download_url: str | None = None

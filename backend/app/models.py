@@ -22,7 +22,7 @@ class Base(DeclarativeBase):
 
 
 class Album(Base):
-    """专辑：slug 用于 URL，cover_path 指向 /media 下的封面文件。"""
+    """专辑：slug 用于 URL，cover_path 指向封面文件，download_path 指向 zip 下载包。"""
 
     __tablename__ = "albums"
 
@@ -32,6 +32,10 @@ class Album(Base):
     cover_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
     release_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    download_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    downloadable: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false")
+    )
     published: Mapped[bool] = mapped_column(
         Boolean, default=True, server_default=text("true")
     )

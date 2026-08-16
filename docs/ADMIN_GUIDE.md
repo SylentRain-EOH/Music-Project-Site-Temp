@@ -25,7 +25,7 @@ python scripts/init_db.py
 uvicorn app.main:app --reload --port 8000
 ```
 
-`init_db.py` 只需在数据库首次使用或重建后执行；之后正常启动后端即可。
+`init_db.py` 可重复执行：首次使用时会建表；后续模型新增字段时，重新执行一次即可补齐缺失列。
 
 ### 2.2 登录
 
@@ -83,6 +83,26 @@ curl -u admin:admin -F "file=@/path/to/cover.jpg" \
 
 复制 `path` 的值（即 `covers/xxxxxxxx.jpg`），下一步填入专辑。
 
+### 步骤 2.1：上传专辑下载包（可选）
+
+如果该专辑需要提供 zip 下载：
+
+```bash
+curl -u admin:admin -F "file=@/path/to/album.zip" \
+  http://localhost:8000/api/v1/uploads/download
+```
+
+返回：
+
+```json
+{
+  "path": "downloads/xxxxxxxx.zip",
+  "url": "/media/downloads/xxxxxxxx.zip"
+}
+```
+
+复制 `path`，下一步填入专辑的“下载文件路径”。
+
 ### 步骤 3：上传音频
 
 每首曲目上传一次：
@@ -112,6 +132,8 @@ curl -u admin:admin -F "file=@/path/to/01.mp3" \
    - 封面路径：粘贴步骤 2 的 `covers/xxx.jpg`
    - 发行日期：可选
    - 简介：可选
+   - 下载文件路径：可选，粘贴步骤 2.1 返回的 `downloads/xxx.zip`；填写 `/media/downloads/xxx.zip` 也可以
+   - 允许下载：勾选后专辑详情页才会显示下载按钮
    - 已发布：勾选后才会出现在前端
 3. 保存
 

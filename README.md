@@ -148,7 +148,7 @@ CREATE DATABASE database OWNER username;
 DATABASE_URL=postgresql+psycopg://username:password@localhost:5432/database
 ```
 
-3. 在 PostgreSQL 中建表：
+3. 在 PostgreSQL 中创建/更新表（可重复执行）：
 
 ```bash
 python scripts/init_db.py

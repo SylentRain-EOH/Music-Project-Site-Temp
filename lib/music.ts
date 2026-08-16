@@ -38,4 +38,6 @@ export type AlbumDetail = AlbumSummary & {
   description: string | null;
   credits: Credit[];
   tracks: Track[];
+  downloadable: boolean;
+  download_url: string | null;
 };

@@ -10,6 +10,7 @@ import {
   BackIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  DownloadIcon,
 } from "@/components/player/icons";
 import {
   flipFromRect,
@@ -19,6 +20,7 @@ import {
   takeCoverTransition,
 } from "@/lib/cover-transition";
 import type { AlbumDetail, AlbumSummary } from "@/lib/music";
+import { browserApiBaseUrl, siteConfig } from "@/lib/site";
 
 export default function AlbumDetailView({
   album,
@@ -40,6 +42,15 @@ export default function AlbumDetailView({
     return takeNavDirection();
   });
   const [slideOut, setSlideOut] = useState<"left" | "right" | null>(null);
+  const canDownload =
+    siteConfig.downloads.enabled &&
+    album.downloadable &&
+    album.download_url !== null;
+  const downloadHref = album.download_url
+    ? /^https?:\/\//.test(album.download_url)
+      ? album.download_url
+      : `${browserApiBaseUrl}${album.download_url}`
+    : null;
 
   // 挂载时若存在“从列表飞来”的过渡记录，封面从卡片位置 FLIP 到详情位置。
   useLayoutEffect(() => {
@@ -167,7 +178,7 @@ export default function AlbumDetailView({
           <div className="mt-5 min-h-0 flex-1 overflow-y-auto whitespace-pre-line text-sm leading-7 text-foreground-soft">
             {album.description || ""}
           </div>
-          <div className="pt-6">
+          <div className="flex items-center gap-4 pt-6">
             <AlbumPlayButton
               tracks={album.tracks}
               onBeforeNavigate={() => {
@@ -186,6 +197,16 @@ export default function AlbumDetailView({
                 }
               }}
             />
+            {canDownload && downloadHref ? (
+              <a
+                href={downloadHref}
+                download
+                aria-label="下载专辑"
+                className="flex h-16 w-16 items-center justify-center rounded-full border border-line text-foreground-soft transition-all hover:scale-105 hover:border-line-hover hover:text-foreground"
+              >
+                <DownloadIcon className="h-6 w-6" />
+              </a>
+            ) : null}
           </div>
         </div>
         </div>

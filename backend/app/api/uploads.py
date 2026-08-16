@@ -1,4 +1,4 @@
-"""上传接口：受 Basic Auth 保护，保存音频/封面并返回相对路径。"""
+"""上传接口：受 Basic Auth 保护，保存音频/封面/专辑 zip 并返回相对路径。"""
 
 import hmac
 import uuid
@@ -14,6 +14,7 @@ security = HTTPBasic()
 
 AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a", ".ogg"}
 COVER_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+DOWNLOAD_EXTENSIONS = {".zip"}
 
 
 def require_admin(credentials: HTTPBasicCredentials = Depends(security)) -> None:
@@ -52,4 +53,11 @@ async def upload_audio(file: UploadFile = File(...)) -> dict[str, str]:
 async def upload_cover(file: UploadFile = File(...)) -> dict[str, str]:
     """上传封面文件，返回可填入 albums.cover_path 的路径。"""
     path = _save_upload(file, "covers", COVER_EXTENSIONS)
+    return {"path": path, "url": f"/media/{path}"}
+
+
+@router.post("/download", dependencies=[Depends(require_admin)])
+async def upload_download(file: UploadFile = File(...)) -> dict[str, str]:
+    """上传专辑 zip 下载包，返回可填入 albums.download_path 的路径。"""
+    path = _save_upload(file, "downloads", DOWNLOAD_EXTENSIONS)
     return {"path": path, "url": f"/media/{path}"}

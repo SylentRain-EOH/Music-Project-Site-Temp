@@ -1,10 +1,14 @@
-"""专辑接口：列表与详情。"""
+"""专辑接口：列表、详情与 zip 下载。"""
+
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.config import settings
 from app.database import get_db
 from app.models import Album, Credit, Track
 from app.schemas import AlbumDetail, AlbumListItem, ArtistOut, CreditOut, TrackListItem
@@ -14,6 +18,22 @@ router = APIRouter(prefix="/albums", tags=["albums"])
 
 def _cover_url(album: Album) -> str | None:
     return f"/media/{album.cover_path}" if album.cover_path else None
+
+
+def _download_url(album: Album) -> str | None:
+    if not album.downloadable or not album.download_path:
+        return None
+    return f"/api/v1/albums/{album.slug}/download"
+
+
+def _resolve_download_path(value: str) -> Path:
+    """兼容后台填写相对路径或 /media/... 完整 URL 路径。"""
+    raw_path = value.strip()
+    if raw_path.startswith("/media/"):
+        raw_path = raw_path.removeprefix("/media/")
+    elif raw_path.startswith("media/"):
+        raw_path = raw_path.removeprefix("media/")
+    return (settings.media_root / raw_path).resolve()
 
 
 def _credit_out(credit: Credit) -> CreditOut:
@@ -37,6 +57,8 @@ def _album_detail(album: Album) -> AlbumDetail:
     return AlbumDetail(
         **_album_list_item(album).model_dump(),
         description=album.description,
+        downloadable=album.downloadable,
+        download_url=_download_url(album),
         credits=[_credit_out(credit) for credit in album.credits],
         tracks=[
             TrackListItem(
@@ -67,6 +89,30 @@ async def list_albums(
         .order_by(Album.release_date.desc().nulls_last(), Album.id.desc())
     )
     return [_album_list_item(album) for album in result.scalars().all()]
+
+
+@router.get("/{slug}/download")
+async def download_album(
+    slug: str, db: AsyncSession = Depends(get_db)
+) -> FileResponse:
+    """下载已发布且开启下载的专辑 zip 包。"""
+    result = await db.execute(
+        select(Album).where(Album.slug == slug, Album.published.is_(True))
+    )
+    album = result.scalar_one_or_none()
+    if album is None or not album.downloadable or not album.download_path:
+        raise HTTPException(status_code=404, detail="专辑下载不存在")
+
+    media_root = settings.media_root.resolve()
+    download_path = _resolve_download_path(album.download_path)
+    if not download_path.is_relative_to(media_root) or not download_path.is_file():
+        raise HTTPException(status_code=404, detail="下载文件不存在")
+
+    return FileResponse(
+        download_path,
+        media_type="application/zip",
+        filename=Path(download_path).name,
+    )
 
 
 @router.get("/{slug}", response_model=AlbumDetail)

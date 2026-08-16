@@ -45,10 +45,14 @@ class AlbumAdmin(ModelView, model=Album):
         Album.slug,
         Album.title,
         Album.release_date,
+        Album.downloadable,
         Album.published,
     ]
     column_searchable_list = [Album.title, Album.slug]
-    column_filters = [BooleanFilter(Album.published)]
+    column_filters = [
+        BooleanFilter(Album.published),
+        BooleanFilter(Album.downloadable),
+    ]
     column_labels = {
         Album.id: "ID",
         Album.slug: "URL 标识",
@@ -56,6 +60,8 @@ class AlbumAdmin(ModelView, model=Album):
         Album.cover_path: "封面路径",
         Album.release_date: "发行日期",
         Album.description: "简介",
+        Album.download_path: "下载文件路径",
+        Album.downloadable: "允许下载",
         Album.published: "已发布",
     }
     form_columns = [
@@ -64,6 +70,8 @@ class AlbumAdmin(ModelView, model=Album):
         Album.cover_path,
         Album.release_date,
         Album.description,
+        Album.download_path,
+        Album.downloadable,
         Album.published,
     ]
 

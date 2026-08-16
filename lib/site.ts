@@ -13,6 +13,10 @@ export const siteConfig = {
   player: {
     autoPlayTrackId: 1,
   },
+  // 专辑 zip 下载：false 时前端隐藏所有下载按钮。
+  downloads: {
+    enabled: true,
+  },
   // 导航栏频谱：color 支持普通 CSS 颜色，也支持 "var(--xxx)" 形式的主题变量。
   // peak.enabled 为 false 时保持现有实时频谱；改为 true 后启用柱顶峰值元件。
   spectrum: {
@@ -51,3 +55,13 @@ export const siteConfig = {
       "linear-gradient(180deg, rgba(11, 11, 15, 0.55) 0%, rgba(11, 11, 15, 0.82) 100%)",
   },
 } as const;
+
+// 浏览器端访问 FastAPI 的地址。
+// 本地开发时优先使用 NEXT_PUBLIC_API_BASE_URL，其次回退到
+// NEXT_PUBLIC_MEDIA_BASE_URL（两者通常都是 http://localhost:8000）。
+// 生产静态部署时保持为空，下载/音频等继续走同域 /api、/media 相对路径。
+export const browserApiBaseUrl = (
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_MEDIA_BASE_URL ??
+  ""
+).replace(/\/$/, "");
