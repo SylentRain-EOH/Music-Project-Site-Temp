@@ -57,7 +57,7 @@ class Album(Base):
 
 
 class Track(Base):
-    """曲目：audio_path 指向音频文件，lyrics 保存纯文本歌词。"""
+    """曲目：audio_path 指向音频文件，lyrics 支持纯文本或 [mm:ss.xx] 时间戳歌词。"""
 
     __tablename__ = "tracks"
     __table_args__ = (

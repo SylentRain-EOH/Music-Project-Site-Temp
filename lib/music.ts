@@ -31,6 +31,7 @@ export type Track = {
 
 export type TrackDetail = Track & {
   lyrics: string | null;
+  album_description: string | null;
 };
 
 export type AlbumDetail = AlbumSummary & {

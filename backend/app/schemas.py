@@ -41,6 +41,8 @@ class TrackListItem(BaseModel):
 
 class TrackDetail(TrackListItem):
     lyrics: str | None = None
+    # 无歌词曲目在前端播放器页回退展示的专辑简介。
+    album_description: str | None = None
 
 
 class AlbumDetail(AlbumListItem):

@@ -88,7 +88,7 @@ class TrackAdmin(ModelView, model=Track):
         Track.track_number: "曲号",
         Track.duration_seconds: "时长（秒）",
         Track.audio_path: "音频路径",
-        Track.lyrics: "歌词",
+        Track.lyrics: "歌词（每行可加 [mm:ss.xx] 时间戳）",
     }
     form_columns = [
         Track.album,

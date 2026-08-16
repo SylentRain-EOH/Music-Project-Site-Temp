@@ -59,6 +59,7 @@ async def get_track(track_id: int, db: AsyncSession = Depends(get_db)) -> TrackD
             for credit in track.credits
         ],
         lyrics=track.lyrics,
+        album_description=album.description,
     )
 
 

@@ -14,12 +14,14 @@ const mediaBaseUrl = (process.env.NEXT_PUBLIC_MEDIA_BASE_URL ?? "").replace(
   /\/$/,
   ""
 );
+// 每次构建追加不同 query，强制 force-cache 使用新 key，
+// 避免增量构建复用旧的 API 响应，同时保持静态导出可构建。
+const fetchCacheBust = Date.now().toString(36);
 
 async function fetchJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${apiBaseUrl}${path}`, {
-    // 开发模式实时读取数据库；生产构建时缓存，确保静态导出数据一致。
-    cache: process.env.NODE_ENV === "development" ? "no-store" : "force-cache",
-  });
+  const url = new URL(`${apiBaseUrl}${path}`);
+  url.searchParams.set("build", fetchCacheBust);
+  const response = await fetch(url, { cache: "force-cache" });
   if (!response.ok) {
     throw new Error(`API 请求失败（${response.status}）：${path}`);
   }

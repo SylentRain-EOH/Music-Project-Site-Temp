@@ -1,7 +1,7 @@
 // 独立播放器页视图：封面 FLIP、进度控制、播放模式、播放列表与歌词展示。
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -22,6 +22,11 @@ import {
   saveCoverTransition,
   takeCoverTransition,
 } from "@/lib/cover-transition";
+import {
+  getActiveLyricIndex,
+  hasTimedLyrics,
+  parseLyrics,
+} from "@/lib/lyrics";
 import type { Track, TrackDetail } from "@/lib/music";
 
 const playModeLabels = {
@@ -36,6 +41,10 @@ function formatTime(seconds: number): string {
   const remaining = Math.floor(seconds % 60);
   return `${minutes}:${remaining.toString().padStart(2, "0")}`;
 }
+
+// 歌词视口为 h-44(176px)，行高为 leading-8(32px)。
+// 在时间戳歌词上下增加 padding，使首行和末行也能滚动到视口中心。
+const LYRIC_CENTER_PADDING_PX = (176 - 32) / 2;
 
 export default function PlayerView({ track }: { track: TrackDetail }) {
   const router = useRouter();
@@ -60,6 +69,13 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
     seekTo,
     cyclePlayMode,
   } = usePlayer();
+  const lyricLineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
+  const lyricsViewportRef = useRef<HTMLDivElement | null>(null);
+  const lyricLines = useMemo(() => parseLyrics(track.lyrics), [track.lyrics]);
+  const timedLyrics = hasTimedLyrics(lyricLines);
+  const activeLyricIndex = timedLyrics
+    ? getActiveLyricIndex(lyricLines, currentTime)
+    : -1;
 
   useEffect(() => {
     // 直接打开 URL 时，让播放器同步到当前曲目。
@@ -86,6 +102,23 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
       router.prefetch(`/tracks/${item.id}`);
     }
   }, [track.album_slug, queue, router]);
+
+  useLayoutEffect(() => {
+    // 时间戳歌词：当前高亮行变化时，在绘制前把该行滚动到歌词视口中部。
+    if (!timedLyrics || activeLyricIndex < 0) return;
+    const viewport = lyricsViewportRef.current;
+    const line = lyricLineRefs.current[activeLyricIndex];
+    if (!viewport || !line) return;
+    const viewportRect = viewport.getBoundingClientRect();
+    const lineRect = line.getBoundingClientRect();
+    const lineTop = viewport.scrollTop + lineRect.top - viewportRect.top;
+    const targetTop =
+      lineTop - viewport.clientHeight / 2 + line.clientHeight / 2;
+    viewport.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "smooth",
+    });
+  }, [activeLyricIndex, timedLyrics]);
 
   useLayoutEffect(() => {
     // 从详情/返回进入时，封面从记录的位置 FLIP 到播放器位置。
@@ -141,7 +174,7 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
       </div>
 
       <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-        <div className="grid w-[80%] max-w-5xl items-center gap-x-32 gap-y-10 md:grid-cols-[minmax(0,360px)_1fr]">
+        <div className="grid w-[80%] max-w-5xl items-center gap-x-40 gap-y-10 md:grid-cols-[minmax(0,360px)_1fr]">
         <div
           ref={coverRef}
           className="relative aspect-square self-start overflow-hidden rounded-lg bg-surface-raised"
@@ -178,12 +211,52 @@ export default function PlayerView({ track }: { track: TrackDetail }) {
               </p>
             ) : null}
 
-            <div className="mt-5 h-44 overflow-y-auto">
-              {track.lyrics ? (
+            <div
+              key={track.id}
+              ref={lyricsViewportRef}
+              className="mt-5 h-44 overflow-y-auto scroll-smooth scrollbar-hidden"
+            >
+              {timedLyrics ? (
+                <div
+                  style={{
+                    paddingTop: LYRIC_CENTER_PADDING_PX,
+                    paddingBottom: LYRIC_CENTER_PADDING_PX,
+                  }}
+                >
+                  {lyricLines.map((line, index) => {
+                    const isActive = index === activeLyricIndex;
+                    return (
+                      <p
+                        key={`${line.time ?? "meta"}-${index}`}
+                        ref={(element) => {
+                          lyricLineRefs.current[index] = element;
+                        }}
+                        className={`text-sm leading-8 transition-colors duration-base ${
+                          line.time === null
+                            ? "text-foreground-muted"
+                            : isActive
+                              ? "text-foreground"
+                              : "text-foreground-faint"
+                        }`}
+                      >
+                        {line.text || "♪"}
+                      </p>
+                    );
+                  })}
+                </div>
+              ) : track.lyrics?.trim() ? (
                 <pre className="whitespace-pre-wrap text-sm leading-8 text-foreground-soft">
                   {track.lyrics}
                 </pre>
-              ) : null}
+              ) : track.album_description?.trim() ? (
+                <pre className="whitespace-pre-wrap text-sm leading-8 text-foreground-soft">
+                  {track.album_description}
+                </pre>
+              ) : (
+                <p className="text-sm leading-8 text-foreground-muted">
+                  暂无歌词
+                </p>
+              )}
             </div>
           </div>
         </div>
