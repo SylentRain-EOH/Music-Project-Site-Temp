@@ -6,7 +6,7 @@ import { getAlbum, getAlbums } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "专辑",
-  description: "浏览 Soul Searching 企划下已发布的所有专辑。",
+  description: "浏览 Your Project 企划下已发布的所有专辑。",
 };
 
 export default async function AlbumsPage() {

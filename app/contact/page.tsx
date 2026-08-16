@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "联系",
-  description: "联系 Soul Searching 企划。",
+  description: "联系 Your Project 企划。",
 };
 
 export default function ContactPage() {

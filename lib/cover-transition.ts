@@ -12,7 +12,7 @@ export type CoverTransition = {
   rect: CoverRect;
 };
 
-const STORAGE_KEY = "soul-searching-cover-transition";
+const STORAGE_KEY = "cover-transition";
 const NAV_DIRECTION_KEY = "album-nav-direction";
 
 export function saveCoverTransition(transition: CoverTransition) {

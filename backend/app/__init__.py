@@ -1,1 +1,1 @@
-"""Soul Searching backend application."""
+"""Your Project backend application."""

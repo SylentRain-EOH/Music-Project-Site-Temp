@@ -11,7 +11,7 @@
 ## 目录结构与文件功能
 
 ```text
-soul-searching-site/
+Music-Project-Site-Temp/
 ├── app/                        # Next.js 页面（App Router）
 │   ├── layout.tsx              # 根布局：锁定视口高度，挂载全局播放器状态
 │   ├── page.tsx                # 首页：企划介绍与入口
@@ -175,7 +175,7 @@ npm run build
 server {
   listen 80;
   server_name your-domain.com;
-  root /var/www/soul-searching/out;
+  root /path/to/out;
 
   location /api/v1/ {
     proxy_pass http://127.0.0.1:8000;

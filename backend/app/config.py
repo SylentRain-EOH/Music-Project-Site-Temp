@@ -18,11 +18,11 @@ DEFAULT_ADMIN_PASSWORD = "admin"
 class Settings(BaseSettings):
     """数据库、媒体目录与 CORS 配置。"""
 
-    app_name: str = "Soul Searching API"
+    app_name: str = "Your Project API"
     # 运行环境：development（默认）或 production。
     app_env: str = "development"
     database_url: str = (
-        "postgresql+psycopg://postgres:postgres@localhost:5432/soulsearching"
+        "postgresql+psycopg://postgres:postgres@localhost:5432/yourdb"
     )
     media_root: Path = BASE_DIR / "media"
     # 上传文件大小上限，防止误传或恶意上传耗尽磁盘。

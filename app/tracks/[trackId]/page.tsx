@@ -31,7 +31,7 @@ export async function generateMetadata({
     const track = await getTrack(trackId);
     return {
       title: track.title,
-      description: `${track.album_title} · Soul Searching`,
+      description: `${track.album_title} · Your Project`,
     };
   } catch {
     return { title: "曲目不存在" };
