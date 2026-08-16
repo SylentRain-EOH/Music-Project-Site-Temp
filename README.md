@@ -1,6 +1,6 @@
 # Music Project Website Template
 
-一个可作为模板使用的音乐企划网站，功能参考塞壬唱片官网：专辑陈列与搜索、专辑详情、独立播放器页面、导航栏内嵌全局播放器（真实频谱、播放模式、播放列表），并带管理后台与静态导出部署。
+一个可作为模板使用的音乐企划网站，功能参考塞壬唱片官网：专辑陈列与搜索、专辑详情、专辑 zip 下载、独立播放器页面、时间戳歌词滚动高亮、导航栏内嵌全局播放器（真实频谱、播放模式、播放列表、进入页面自动播放），并带管理后台与静态导出部署。
 
 ## 技术栈
 
@@ -21,42 +21,47 @@ soul-searching-site/
 │   ├── contact/                # 联系页（含版权信息栏）
 │   └── globals.css             # 全局样式、动画与 View Transition 兜底规则
 ├── components/
-│   ├── site-header.tsx         # 顶部导航栏：Logo 位 + 内嵌播放器 + 导航链接
-│   ├── nav-links.tsx           # 导航高亮与切页前淡出
+│   ├── site-header.tsx         # 顶部导航栏：Logo + 内嵌播放器 + 导航链接
+│   ├── site-logo.tsx           # 从 siteConfig.logo 读取的 Logo
+│   ├── site-background.tsx     # 从 siteConfig.background 读取的全局背景层
+│   ├── nav-links.tsx           # 导航高亮滑动指示器与切页前淡出
 │   ├── page-transition.tsx     # 页面进入淡入（纯 CSS，避免闪烁）
 │   ├── copyright-button.tsx    # 联系页右下角版权信息栏
 │   ├── albums/
 │   │   ├── album-list.tsx          # 专辑网格、封面 FLIP、进入/返回渐入渐出
-│   │   ├── album-detail-view.tsx   # 详情视图：封面飞入/飞出、信息渐入渐出
+│   │   ├── album-detail-view.tsx   # 详情视图：封面飞入/飞出、播放与下载按钮
 │   │   └── album-play-button.tsx   # 播放专辑：整张专辑作为队列
 │   └── player/
 │       ├── player-provider.tsx  # 全局播放状态（audio、队列、模式、音量、进度）
 │       ├── global-player.tsx    # 导航栏内嵌播放器（曲名方框 + 下拉播放列表）
-│       ├── player-view.tsx      # 独立播放器页（进度、歌词、播放列表弹层）
+│       ├── player-view.tsx      # 独立播放器页（进度、歌词高亮、播放列表弹层）
 │       ├── spectrum.tsx         # Web Audio AnalyserNode 真实频谱
 │       ├── volume-control.tsx   # 音量调节（静音 + 滑杆）
 │       └── icons.tsx            # 播放器 SVG 图标集
 ├── lib/
 │   ├── api.ts               # 服务端 API 客户端（构建时拉取数据）
+│   ├── lyrics.ts            # LRC 时间戳歌词解析与高亮行计算
 │   ├── music.ts             # 前端数据结构（与后端字段一致）
-│   ├── site.ts              # 站点名称、邮箱、导航配置
+│   ├── site.ts              # 站点名称、Logo、背景、播放器、下载等配置
 │   └── cover-transition.ts  # 跨页面封面 FLIP 过渡工具
+├── docs/
+│   └── ADMIN_GUIDE.md       # 管理后台从零发布内容指南
 ├── backend/
 │   ├── app/
 │   │   ├── main.py          # FastAPI 入口：CORS、路由、/media 静态目录
 │   │   ├── admin.py         # SQLAdmin 管理后台（/admin）
-│   │   ├── config.py        # 配置（数据库、媒体目录、CORS）
+│   │   ├── config.py        # 配置（数据库、媒体目录、上传限制、CORS）
 │   │   ├── database.py      # SQLAlchemy 异步引擎与会话
 │   │   ├── models.py        # albums / tracks / artists / credits 模型
 │   │   ├── schemas.py       # API 响应模型
 │   │   └── api/
-│   │       ├── albums.py    # 专辑列表/详情接口
+│   │       ├── albums.py    # 专辑列表/详情/zip 下载接口
 │   │       ├── tracks.py    # 曲目详情/音频流（支持 Range）
-│   │       └── uploads.py   # 音频/封面上传（受管理员账号保护）
+│   │       └── uploads.py   # 音频/封面/zip 上传（受管理员账号保护）
 │   ├── scripts/
-│   │   ├── init_db.py       # 建表脚本
+│   │   ├── init_db.py       # 建表/补列脚本（可重复执行）
 │   │   └── seed_demo.py     # 演示数据（生成测试音频）
-│   ├── media/               # 音频与封面文件（git 忽略）
+│   ├── media/               # 音频、封面与下载文件（git 忽略）
 │   └── README.md            # 后端运行说明
 ├── .env.example             # 前端环境变量示例
 └── package.json             # 前端依赖与脚本（build 已固定 webpack）
@@ -111,7 +116,7 @@ cd ..
 npm run dev
 ```
 
-本地环境文件：`.env.local`（`API_BASE_URL`）与 `.env.development`（`NEXT_PUBLIC_MEDIA_BASE_URL`）已在当前机器生成；新环境按 `.env.example` 自行创建。
+本地环境文件：`.env.local`（构建期 `API_BASE_URL`）与 `.env.development`（浏览器端 `NEXT_PUBLIC_MEDIA_BASE_URL` / `NEXT_PUBLIC_API_BASE_URL`）已在当前机器生成；新环境按 `.env.example` 自行创建。
 
 ### 管理后台
 
@@ -199,24 +204,26 @@ server {
 
 ### 0. 推荐流程：管理后台 + 上传接口
 
-1. 用上传接口把音频和封面放入 `backend/media/`：
+1. 用上传接口把音频、封面和可选 zip 下载包放入 `backend/media/`：
 
 ```bash
 curl -u admin:admin -F "file=@song.mp3" http://localhost:8000/api/v1/uploads/audio
 curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/cover
+curl -u admin:admin -F "file=@album.zip" http://localhost:8000/api/v1/uploads/download
 ```
 
 接口会返回类似 `{"path": "audio/xxxx.mp3", "url": "/media/audio/xxxx.mp3"}` 的结果。
 
-2. 打开 `/admin`，把返回的 `path` 填进对应专辑的 `cover_path` 或曲目的 `audio_path`，再填写标题、曲号、歌词、制作人等信息。
+2. 打开 `/admin`，把返回的 `path` 填进对应专辑的 `cover_path`、`download_path` 或曲目的 `audio_path`，再填写标题、曲号、歌词、制作人等信息；需要下载的专辑勾选“允许下载”。
 
 3. 重新构建前端即可发布：`npm run build`。
 
-### 1. 音频与封面
+### 1. 音频、封面与下载包
 
 - 音频文件放入 `backend/media/audio/`，例如 `backend/media/audio/album-a/01.mp3`
 - 封面放入 `backend/media/covers/`
-- 数据库中的 `tracks.audio_path` 与 `albums.cover_path` 存相对 `media/` 的路径，例如 `audio/album-a/01.mp3`
+- 下载包放入 `backend/media/downloads/`
+- 数据库中的 `tracks.audio_path`、`albums.cover_path`、`albums.download_path` 存相对 `media/` 的路径，例如 `audio/album-a/01.mp3`
 
 ### 2. 数据库录入
 
@@ -224,36 +231,55 @@ curl -u admin:admin -F "file=@cover.jpg" http://localhost:8000/api/v1/uploads/co
 
 | 表 | 用途 | 关键字段 |
 | --- | --- | --- |
-| `albums` | 专辑 | `slug`（URL 标识）、`title`、`cover_path`、`release_date`、`published` |
+| `albums` | 专辑 | `slug`、`title`、`cover_path`、`release_date`、`description`、`download_path`、`downloadable`、`published` |
 | `tracks` | 曲目 | `album_id`、`title`、`track_number`、`duration_seconds`、`audio_path`、`lyrics` |
 | `artists` | 制作人/音乐人 | `name` |
 | `credits` | 专辑/曲目与制作人关联 | `album_id`/`track_id`、`artist_id` |
 
-`published` 设为 `false` 的专辑不会出现在前端。
+`published` 设为 `false` 的专辑不会出现在前端；`downloadable` 设为 `false` 时专辑详情页不显示下载按钮。
 
 ### 3. 需要修改的占位内容
 
-- 站点名称：编辑 `lib/site.ts` 中的 `name`
-- 联系邮箱：编辑 `lib/site.ts` 中的 `email`
+所有品牌与视觉占位都集中在 `lib/site.ts`：
+
+- 站点名称：`siteConfig.name`
+- 站点简介：`siteConfig.description`
+- 联系邮箱：`siteConfig.email`
+- Logo：替换 `public/images/logo.svg`，或在 `siteConfig.logo.src` 指向新文件
+- 背景图：替换 `public/images/background.svg`，或在 `siteConfig.background.src` 指向新文件
+- 自动播放曲目：`siteConfig.player.autoPlayTrackId`
+- 频谱外观与峰值模式：`siteConfig.spectrum`
+- 全局下载开关：`siteConfig.downloads.enabled`
 - 版权文案：编辑 `components/copyright-button.tsx`
-- 站点简介：编辑 `lib/site.ts` 中的 `description`
-- Logo：把 `components/site-header.tsx` 中的文字替换为 Logo 组件
 - 演示数据：执行 `seed_demo.py` 会写入一张演示专辑；若已有同名专辑会跳过，需要重灌时先删除对应记录或重建数据库
 
 ### 4. 歌词
 
-`tracks.lyrics` 存纯文本，播放器页按换行展示；没有歌词的曲目不显示歌词区域。
+`tracks.lyrics` 支持两种形式：
+
+- 纯文本：按换行展示
+- 时间戳歌词：每行开头写 `[mm:ss.xx]`，播放器页会按播放进度高亮并居中当前行
+
+```text
+[00:12.50]第一句歌词
+[00:20.00]第二句歌词
+```
+
+没有歌词的曲目会回退显示所属专辑的 `description`。
 
 ## 后续可扩展点
 
 - 艺术家页：按 `artists` 聚合作品
 - 播放列表历史/最近播放
-- 真实歌词滚动高亮（根据 `currentTime` 同步当前行）
+- 频谱峰值保持已内置，默认关闭，可通过 `siteConfig.spectrum.peak.enabled` 开启
 - 流量增长后把 `backend/media` 迁移到 OSS + CDN，数据库路径不变
 
 ## 已知注意事项
 
 - 开发模式下前端 3000、后端 8000 跨域；真实频谱依赖媒体响应带 CORS 头（FastAPI 已配置）
+- 开发模式下浏览器访问 `/api` 会请求到 Next.js 3000 端口，下载按钮通过 `NEXT_PUBLIC_API_BASE_URL` 直接指向 FastAPI
 - `npm run build` 使用 webpack 模式（Turbopack 在当前机器构建会报环境错误），脚本已固定
 - 静态导出不支持 `next start`，部署请使用 Nginx 等静态服务器
 - 管理后台默认账号仅供本地开发，部署前务必设置 `APP_ENV=production` 以及 `ADMIN_USERNAME`、`ADMIN_PASSWORD`、`SECRET_KEY`（仍使用默认值时后端会拒绝启动）
+- 上传接口默认限制单个文件不超过 `512 MB`，可在 `backend/.env` 的 `MAX_UPLOAD_MB` 调整
+- 生产环境会为后台会话 Cookie 添加 `Secure` 标记，必须通过 HTTPS 访问后台

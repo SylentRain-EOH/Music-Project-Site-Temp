@@ -26,7 +26,12 @@ app.add_middleware(
 )
 
 # 管理后台登录依赖 session，需要会话中间件。
-app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
+# 生产环境同时给会话 Cookie 加上 Secure 标记，要求通过 HTTPS 访问后台。
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.secret_key,
+    https_only=settings.app_env == "production",
+)
 
 app.include_router(albums.router, prefix="/api/v1")
 app.include_router(tracks.router, prefix="/api/v1")

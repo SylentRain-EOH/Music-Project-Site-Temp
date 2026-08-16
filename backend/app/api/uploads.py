@@ -19,11 +19,14 @@ DOWNLOAD_EXTENSIONS = {".zip"}
 
 def require_admin(credentials: HTTPBasicCredentials = Depends(security)) -> None:
     """上传接口与后台共用同一组管理员账号。"""
-    # 用恒定时间比较，避免凭据校验的计时侧信道。
-    if (
-        not hmac.compare_digest(credentials.username, settings.admin_username)
-        or not hmac.compare_digest(credentials.password, settings.admin_password)
-    ):
+    # 两项都做恒定时间比较，避免短路运算造成可观测的时序差异。
+    username_valid = hmac.compare_digest(
+        credentials.username, settings.admin_username
+    )
+    password_valid = hmac.compare_digest(
+        credentials.password, settings.admin_password
+    )
+    if not username_valid or not password_valid:
         raise HTTPException(status_code=401, detail="用户名或密码错误")
 
 
@@ -36,8 +39,18 @@ def _save_upload(file: UploadFile, subdir: str, allowed: set[str]) -> str:
     target_dir.mkdir(parents=True, exist_ok=True)
     filename = f"{uuid.uuid4().hex}{ext}"
     target = target_dir / filename
+    max_bytes = settings.max_upload_mb * 1024 * 1024
+    written = 0
     with target.open("wb") as out:
         while chunk := file.file.read(1024 * 1024):
+            written += len(chunk)
+            if written > max_bytes:
+                out.close()
+                target.unlink(missing_ok=True)
+                raise HTTPException(
+                    status_code=413,
+                    detail=f"文件超过大小限制（{settings.max_upload_mb} MB）",
+                )
             out.write(chunk)
     return f"{subdir}/{filename}"
 

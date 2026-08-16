@@ -25,6 +25,8 @@ class Settings(BaseSettings):
         "postgresql+psycopg://postgres:postgres@localhost:5432/soulsearching"
     )
     media_root: Path = BASE_DIR / "media"
+    # 上传文件大小上限，防止误传或恶意上传耗尽磁盘。
+    max_upload_mb: int = 512
     cors_origins: list[str] = ["http://localhost:3000"]
     secret_key: str = DEFAULT_SECRET_KEY
     admin_username: str = DEFAULT_ADMIN_USERNAME

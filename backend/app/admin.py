@@ -19,11 +19,10 @@ class AdminAuth(AuthenticationBackend):
         form = await request.form()
         username = form.get("username", "")
         password = form.get("password", "")
-        # 恒定时间比较，避免凭据校验的计时侧信道。
-        if (
-            hmac.compare_digest(username, settings.admin_username)
-            and hmac.compare_digest(password, settings.admin_password)
-        ):
+        # 两项都做恒定时间比较，避免短路运算造成可观测的时序差异。
+        username_valid = hmac.compare_digest(username, settings.admin_username)
+        password_valid = hmac.compare_digest(password, settings.admin_password)
+        if username_valid and password_valid:
             request.session.update({"admin": username})
             return True
         return False
