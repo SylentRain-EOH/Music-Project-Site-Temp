@@ -13,6 +13,26 @@ export const siteConfig = {
   player: {
     autoPlayTrackId: 1,
   },
+  // 导航栏频谱：color 支持普通 CSS 颜色，也支持 "var(--xxx)" 形式的主题变量。
+  // peak.enabled 为 false 时保持现有实时频谱；改为 true 后启用柱顶峰值元件。
+  spectrum: {
+    width: 153,
+    height: 30,
+    barCount: 31,
+    gap: 2,
+    minBarHeight: 3,
+    fftSize: 128,
+    color: "var(--foreground-faint)",
+    peak: {
+      enabled: false,
+      width: 3,
+      height: 1,
+      color: "var(--foreground)",
+      // 峰值元件每秒回落的像素数，数值越大回落越快。
+      fallSpeed: 8,
+      idleHeight: 3,
+    },
+  },
   // 顶部导航栏 Logo：替换 public/images/logo.svg 或修改 src 即可。
   logo: {
     src: "/images/logo.svg",

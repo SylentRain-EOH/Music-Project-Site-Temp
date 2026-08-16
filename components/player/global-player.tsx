@@ -9,6 +9,7 @@ import {
   PlayIcon,
   PrevIcon,
 } from "@/components/player/icons";
+import { siteConfig } from "@/lib/site";
 import type { Track } from "@/lib/music";
 
 import { usePlayer } from "./player-provider";
@@ -53,7 +54,10 @@ export default function GlobalPlayer() {
     <div className="flex h-12 items-center gap-3">
       {currentTrack ? (
         <>
-          <div className="flex w-20 shrink-0 justify-center">
+          <div
+            className="flex shrink-0 justify-center"
+            style={{ width: siteConfig.spectrum.width }}
+          >
             <Spectrum active={isPlaying} />
           </div>
 
