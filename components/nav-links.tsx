@@ -13,6 +13,9 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { siteConfig } from "@/lib/site";
 
+// 高亮下划线相对于导航文字宽度的比例，避免标记与文字等宽显得过长。
+const NAV_INDICATOR_WIDTH_RATIO = 0.75;
+
 function isNavItemActive(href: string, pathname: string) {
   if (href === "/") return pathname === "/";
   if (href === "/albums") {
@@ -55,7 +58,9 @@ export default function NavLinks() {
         setIndicator({ left: 0, width: 0 });
         return;
       }
-      setIndicator({ left: link.offsetLeft, width: link.offsetWidth });
+      const width = link.offsetWidth * NAV_INDICATOR_WIDTH_RATIO;
+      const left = link.offsetLeft + (link.offsetWidth - width) / 2;
+      setIndicator({ left, width });
       setIndicatorReady(true);
     };
 
@@ -113,7 +118,7 @@ export default function NavLinks() {
 
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-[1px] left-0 h-px rounded-full bg-foreground transition-[width,transform] duration-base ease-out"
+        className="pointer-events-none absolute -bottom-1.5 left-0 h-px rounded-full bg-foreground transition-[width,transform] duration-base ease-out"
         style={{
           width: `${indicator.width}px`,
           transform: `translateX(${indicator.left}px)`,
