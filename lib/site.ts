@@ -8,6 +8,11 @@ export const siteConfig = {
     { href: "/albums", label: "专辑" },
     { href: "/contact", label: "联系" },
   ],
+  // 播放器：进入网站时自动播放的曲目 ID；播放列表会包含该曲目所在专辑的全部曲目。
+  // 设为 null 则关闭自动播放。
+  player: {
+    autoPlayTrackId: 1,
+  },
   // 顶部导航栏 Logo：替换 public/images/logo.svg 或修改 src 即可。
   logo: {
     src: "/images/logo.svg",
